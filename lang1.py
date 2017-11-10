@@ -4,18 +4,38 @@ from parglare_mod import Parser, Grammar
 import re
 from parglare_mod import default_shift_action, default_reduce_action
 
+input_string = """
+jeff b ...
+  a d
+  b c
+L1 a b c
+  # comment 1
+   L2 d e f # comment 2
+       L3 g h i
+     m # not a block
+L4 j k l
+L5 m n o
+"""
+
 grammar = r"""
-file: statements EOF |
-      align statements EOF;
-statements: statement | statements align statement;
+file: statements EOF
+    | align statements EOF;
+statements: statement 
+          | statements align statement;
 statement: call_statement;
-call_statement: callable | callable arguments;
+call_statement: callable
+              | callable ellipsis indent continuation_lines dedent
+              | callable arguments
+              | callable arguments ellipsis indent continuation_lines dedent;
+continuation_lines: continuation_line
+                  | continuation_lines align continuation_line;
+continuation_line: arguments;
 callable: identifier;
 arguments: argument | arguments argument;
 argument: identifier | block;
 block: indent statements dedent;
 identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
-ellipsis: "...";
+ellipsis: '...';
 align:; // custom recognizer function
 indent:; // custom recognizer function
 dedent:; // custom recognizer function
@@ -24,10 +44,10 @@ LAYOUT: discardables;
 discardables: discardable | discardables discardable;
 discardable: insignificant_spaces | blank_line | hash_comment |
              hash_comment_line | EMPTY;
-blank_line:; // custom recognizer function
 hash_comment: / *#.*(?=\n)/;
 hash_comment_line: /\n *#.*(?=\n)/;
 insignificant_spaces: / */;
+blank_line:; // custom recognizer function
 """
 
 indent_stack = [""]
@@ -90,17 +110,5 @@ actions = {
 
 g = Grammar.from_string(grammar, recognizers=recognizers)
 parser = Parser(g, actions=actions)
-result = parser.parse(
-"""
-
-L1 a b c
-  # comment 1
-   L2 d e f # comment 2
-       L3 g h i
-     m
-L4 j k l
-L5 m n o
-
-
-""")
+result = parser.parse(input_string)
 print(result.tree_str())
