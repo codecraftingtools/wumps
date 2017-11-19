@@ -4,8 +4,8 @@ from parglare_mod import Parser, Grammar
 import re
 from parglare_mod import default_shift_action, default_reduce_action
 
-input_string = """
-jeff b ...
+input_string = r"""
+f b \
   a d
   b c
 L1 a b c
@@ -18,72 +18,103 @@ L5 m n o
 """
 
 grammar = r"""
-file: statements EOF
-    | align statements EOF;
-statements: statement 
-          | statements align statement;
-statement: call_statement;
-call_statement: callable
-              | callable ellipsis indent continuation_lines dedent
-              | callable arguments
-              | callable arguments ellipsis indent continuation_lines dedent;
-continuation_lines: continuation_line
-                  | continuation_lines align continuation_line;
-continuation_line: arguments;
-callable: identifier;
-arguments: argument | arguments argument;
-argument: identifier | block;
-block: indent statements dedent;
+file:
+    statements EOF
+  | statement_separator statements EOF;
+statements:
+    statement
+  | statements statement_separator statement;
+statement:
+    call_statement;
+statement_separators:
+    statement_separator
+  | statement_separators statement_separator;
+statement_separator:
+    align
+  | ";";
+call_statement:
+    callable
+  | callable arguments;
+callable:
+    identifier;
+arguments:
+    positional_arguments;
+positional_arguments:
+    positional_argument
+  | positional_arguments positional_argument;
+positional_argument:
+    identifier
+  | block;
+block:
+    block_start statements block_end;
+block_start:
+    block_indent;
+block_end:
+    block_dedent;
 identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
-ellipsis: '...';
 align:; // custom recognizer function
-indent:; // custom recognizer function
-dedent:; // custom recognizer function
+block_indent:; // custom recognizer function
+block_dedent:; // custom recognizer function
 
-LAYOUT: discardables;
-discardables: discardable | discardables discardable;
-discardable: insignificant_spaces | blank_line | hash_comment |
-             hash_comment_line | EMPTY;
+LAYOUT:
+    discardables;
+discardables:
+    discardable
+  | discardables discardable;
+discardable:
+    insignificant_spaces
+  | escaped_newline
+  | line_continuation
+  | hash_comment
+  | hash_comment_line
+  | blank_line
+  | EMPTY;
+line_continuation: ellipsis "\n";
+insignificant_spaces: / */;
+escaped_newline: /\\ *\n/;
+ellipsis: "...";
 hash_comment: / *#.*(?=\n)/;
 hash_comment_line: /\n *#.*(?=\n)/;
-insignificant_spaces: / */;
 blank_line:; // custom recognizer function
 """
 
-indent_stack = [""]
+class State:
+    def __init__(self):
+        self.indent_stack = [""]
+state = State()
 
 new_line_re = re.compile("\n *")
 def align_recognizer(input, pos):
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) == len(indent_stack[-1]):
+        if len(new_indent) == len(state.indent_stack[-1]):
             return input[pos:m.end()]
 
-def indent_recognizer(input, pos):
+def block_indent_recognizer(input, pos):
    m = new_line_re.match(input, pos)
    if m:
        new_indent = input[pos+1:m.end()]
-       if len(new_indent) > len(indent_stack[-1]):
+       if len(new_indent) > len(state.indent_stack[-1]):
            return input[pos:m.end()]
 
-def indent_action(context, node):
-    indent_stack.append(node[1:])
+def block_indent_action(context, node):
+    state.indent_stack.append(node[1:])
     return default_shift_action(context, node)
 
-def dedent_recognizer(input, pos):
+def block_dedent_recognizer(input, pos):
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) < len(indent_stack[-1]):
+        if len(new_indent) < len(state.indent_stack[-1]):
             return ""
-            if len(new_indent) == len(indent_stack[-2]):
+            if len(new_indent) == len(state.indent_stack[-2]):
                 return input[pos:m.end()]
             else:
                 return ""
 
-def dedent_action(context, node):
-    indent_stack.pop()
+def block_dedent_action(context, node):
+    state.indent_stack.pop()
     return default_shift_action(context, node)
 
 blank_line_re = re.compile("\n *(?=\n)")
@@ -98,14 +129,14 @@ def blank_line_recognizer(input, pos):
 
 recognizers = {
     'align': align_recognizer,
-    'indent': indent_recognizer,
-    'dedent': dedent_recognizer,
+    'block_indent': block_indent_recognizer,
+    'block_dedent': block_dedent_recognizer,
     'blank_line': blank_line_recognizer,
 }
 
 actions = {
-    'indent': indent_action,
-    'dedent': dedent_action,
+    'block_indent': block_indent_action,
+    'block_dedent': block_dedent_action,
 }
 
 g = Grammar.from_string(grammar, recognizers=recognizers)
