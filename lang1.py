@@ -2,36 +2,34 @@
 
 from parglare_mod import Parser, Grammar
 import re
-from parglare_mod import default_shift_action, default_reduce_action
 
 input_string = r"""
 f b \
   a d
-  b c
+  b c;
 L1 a b c
   # comment 1
    L2 d e f # comment 2
-       L3 g h i
+       L3 g h i;
+       J;
      m # not a block
-L4 j k l
-L5 m n o
+L4 j k l;
+L5 m n o;
 """
 
 grammar = r"""
 file:
-    statements EOF
-  | statement_separator statements EOF;
+    statements EOF;
 statements:
-    statement
-  | statements statement_separator statement;
-statement:
-    call_statement;
+    statement_separators? statement+[statement_separators]
+    statement_separators?;
 statement_separators:
-    statement_separator
-  | statement_separators statement_separator;
+    statement_separator+;
 statement_separator:
     align
   | ";";
+statement:
+    call_statement;
 call_statement:
     callable
   | callable arguments;
@@ -40,8 +38,7 @@ callable:
 arguments:
     positional_arguments;
 positional_arguments:
-    positional_argument
-  | positional_arguments positional_argument;
+    positional_argument+;
 positional_argument:
     identifier
   | block;
@@ -57,10 +54,7 @@ block_indent:; // custom recognizer function
 block_dedent:; // custom recognizer function
 
 LAYOUT:
-    discardables;
-discardables:
-    discardable
-  | discardables discardable;
+    discardable+;
 discardable:
     insignificant_spaces
   | escaped_newline
@@ -100,7 +94,7 @@ def block_indent_recognizer(input, pos):
 
 def block_indent_action(context, node):
     state.indent_stack.append(node[1:])
-    return default_shift_action(context, node)
+    return node
 
 def block_dedent_recognizer(input, pos):
     m = new_line_re.match(input, pos)
@@ -115,7 +109,7 @@ def block_dedent_recognizer(input, pos):
 
 def block_dedent_action(context, node):
     state.indent_stack.pop()
-    return default_shift_action(context, node)
+    return node
 
 blank_line_re = re.compile("\n *(?=\n)")
 def blank_line_recognizer(input, pos):
@@ -142,4 +136,5 @@ actions = {
 g = Grammar.from_string(grammar, recognizers=recognizers)
 parser = Parser(g, actions=actions)
 result = parser.parse(input_string)
-print(result.tree_str())
+for i in result[0][1]:
+  print(repr(i))
