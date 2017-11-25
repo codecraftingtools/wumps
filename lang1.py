@@ -7,6 +7,7 @@ input_string = r"""
 f b \
   a d
   b c;
+  d e
 L1 a b c
   # comment 1
    L2 d e f # comment 2
@@ -29,16 +30,11 @@ statement_separator:
     align
   | ";";
 statement:
-    call_statement;
-call_statement:
-    callable
-  | callable arguments;
-callable:
+    call;
+call:
+    command positional_argument*;
+command:
     identifier;
-arguments:
-    positional_arguments;
-positional_arguments:
-    positional_argument+;
 positional_argument:
     identifier
   | block;
@@ -128,13 +124,46 @@ recognizers = {
     'blank_line': blank_line_recognizer,
 }
 
+class File(list):
+    pass
+
+class Block(list):
+    pass
+
+class Call:
+    def __init__(self, command, arguments):
+        self.command = command
+        self.arguments = arguments
+
 actions = {
+    'file': lambda _, nodes: File(nodes[0]),
+    'statements': lambda _, nodes: nodes[1],
+    'call': lambda _, nodes: Call(nodes[0], nodes[1]),
+    'block': lambda _, nodes: Block(nodes[1]),
     'block_indent': block_indent_action,
     'block_dedent': block_dedent_action,
 }
 
+indent_str = "  "
+def print_item(item, indent=0, first_indent=None):
+    if first_indent is None:
+        first_indent = indent
+    if isinstance(item, File):
+        for statement in item:
+            print_item(statement, indent)
+    elif isinstance(item, Block):
+        print()
+        for i, statement in enumerate(item):
+            print_item(statement, indent)
+    elif isinstance(item, Call):
+        print("{}call {}".format(indent_str*first_indent, item.command))
+        for i, arg in enumerate(item.arguments):
+            print("{}{}: ".format(indent_str*(indent+1), i), end="")
+            print_item(arg, indent+2, 0)
+    else:
+        print("{}{}".format(indent_str*first_indent, str(item)))
+
 g = Grammar.from_string(grammar, recognizers=recognizers)
 parser = Parser(g, actions=actions)
-result = parser.parse(input_string)
-for i in result[0][1]:
-  print(repr(i))
+file = parser.parse(input_string)
+print_item(file)
