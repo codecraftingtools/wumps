@@ -8,10 +8,11 @@ f b \
   a d
   b c ... # comment
     d e
-  a
-    b
-  a
     f g
+      a
+        b
+a
+   f g
       h i
     j k;
 L1 a b c
@@ -64,6 +65,7 @@ discardable:
   | hash_comment_line
   | continuation_line_marker
   | continuation_line_indent
+  | continuation_line_dedent
   | continuation_line_align
   | blank_line
   | EMPTY;
@@ -73,48 +75,63 @@ hash_comment: / *#.*(?=\n)/;
 hash_comment_line: /\n *#.*(?=\n)/;
 continuation_line_marker:; // custom recognizer function
 continuation_line_indent:; // custom recognizer function
+continuation_line_dedent:; // custom recognizer function
 continuation_line_align:; // custom recognizer function
 blank_line:; // custom recognizer function
 """
 
 class State:
     def __init__(self):
-        self.indent_stack = [""]
-        self.starting_continuation = False
-        self.in_continuation = False
+        self._indent_stack = [("", False)]
+        self._starting_continuation = False
+    def current_indent(self):
+        return len(self._indent_stack[-1][0])
+    def previous_indent(self):
+        if len(self._ident_stack > 1):
+            return len(self._indent_stack[-2][0])
+        else:
+            return None
+    def push_indent(self, indent):
+        self._indent_stack.append((indent,self._starting_continuation))
+        self._starting_continuation = False
+    def pop_indent(self):
+        self._indent_stack.pop()
+    def in_continuation(self):
+        return self._indent_stack[-1][1]
+    def starting_continuation(self):
+        return self._starting_continuation
+    def start_continuation(self):
+        self._starting_continuation = True
+
 state = State()
 
 new_line_re = re.compile(r"\n *")
 def align_recognizer(input, pos):
-    if state.starting_continuation or state.in_continuation:
+    if state.starting_continuation() or state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) == len(state.indent_stack[-1]):
+        if len(new_indent) == state.current_indent():
             return input[pos:m.end()]
 
 def block_indent_recognizer(input, pos):
-    if state.starting_continuation:
+    if state.starting_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) > len(state.indent_stack[-1]):
+        if len(new_indent) > state.current_indent():
             return input[pos:m.end()]
 
 def block_dedent_recognizer(input, pos):
-    if state.starting_continuation:
+    if state.starting_continuation() or state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) < len(state.indent_stack[-1]):
+        if len(new_indent) < state.current_indent():
             return ""
-            if len(new_indent) == len(state.indent_stack[-2]):
-                return input[pos:m.end()]
-            else:
-                return ""
 
 continuation_line_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def continuation_line_marker_recognizer(input, pos):
@@ -123,21 +140,30 @@ def continuation_line_marker_recognizer(input, pos):
         return input[pos:m.end()]
 
 def continuation_line_indent_recognizer(input, pos):
-    if not state.starting_continuation:
+    if not state.starting_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) > len(state.indent_stack[-1]):
+        if len(new_indent) > state.current_indent():
             return input[pos:m.end()]
 
-def continuation_line_align_recognizer(input, pos):
-    if not state.in_continuation:
+def continuation_line_dedent_recognizer(input, pos):
+    if not state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) == len(state.indent_stack[-1]):
+        if len(new_indent) < state.current_indent():
+            return ""
+
+def continuation_line_align_recognizer(input, pos):
+    if not state.in_continuation():
+        return None
+    m = new_line_re.match(input, pos)
+    if m:
+        new_indent = input[pos+1:m.end()]
+        if len(new_indent) == state.current_indent():
             return input[pos:m.end()]
 
 blank_line_re = re.compile(r"\n *(?=\n)")
@@ -157,6 +183,7 @@ recognizers = {
     'blank_line': blank_line_recognizer,
     'continuation_line_marker': continuation_line_marker_recognizer,
     'continuation_line_indent': continuation_line_indent_recognizer,
+    'continuation_line_dedent': continuation_line_dedent_recognizer,
     'continuation_line_align': continuation_line_align_recognizer,
 }
 
@@ -172,27 +199,23 @@ class Block(list):
     pass
 
 def block_indent_action(context, node):
-    state.indent_stack.append(node[1:])
-    if state.in_continuation:
-        state.indent_stack.pop()
-    state.in_continuation = False
+    state.push_indent(node[1:])
     return node
 
 def block_dedent_action(context, node):
-    if state.in_continuation:
-        state.indent_stack.pop()
-        state.in_continuation = False
-    state.indent_stack.pop()
+    state.pop_indent()
     return node
 
 def continuation_line_marker_action(context, node):
-    state.starting_continuation = True
+    state.start_continuation()
     return node
 
 def continuation_line_indent_action(context, node):
-    state.starting_continuation = False
-    state.in_continuation = True
-    state.indent_stack.append(node[1:])
+    state.push_indent(node[1:])
+    return node
+
+def continuation_line_dedent_action(context, node):
+    state.pop_indent()
     return node
 
 actions = {
@@ -204,6 +227,7 @@ actions = {
     'block_dedent': block_dedent_action,
     'continuation_line_marker': continuation_line_marker_action,
     'continuation_line_indent': continuation_line_indent_action,
+    'continuation_line_dedent': continuation_line_dedent_action,
 }
 
 indent_str = "  "
