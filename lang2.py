@@ -5,29 +5,30 @@ import re
 
 indent_token = "  "
 
-class File:
-    def __init__(self, context, nodes):
+class Identifier:
+    def __init__(self, id_string, context=None):
         self._context = context
-        self._statements = nodes[1]
-        if hasattr(context, "file_name"):
-            self._path = context.file_name
-        else:
-            self._path = "<None>"
+        if id_string.endswith(':'):
+            id_string = id_string[:-1].rstrip()
+        self._string = id_string
+
+    @classmethod
+    def parse_action(cls, context, node):
+        return cls(node, context=context)
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}File".format(indent_token*first_indent))
-        print("{}path: {}".format(indent_token*(indent+1), self._path))
-        print("{}statements:".format(indent_token*(indent+1)))
-        for s in self._statements:
-            s.print(indent=indent+2)
+        print("{}{}".format(indent_token*first_indent, self._string))
 
 class Named_Expression:
-    def __init__(self, context, nodes):
+    def __init__(self, name, expression, context=None):
         self._context = context
-        self._name = nodes[0]
-        self._expression = nodes[1]
-        #self._expression = nodes[2]
+        self._name = name
+        self._expression = expression
+
+    @classmethod
+    def parse_action(cls, context, nodes):
+        return cls(nodes[0], nodes[1], context=context)
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
@@ -38,17 +39,23 @@ class Named_Expression:
         self._expression.print(indent+1, first_indent=0)
 
 class Call:
-    def __init__(self, context, nodes):
+    def __init__(self, callee, arguments, context=None):
         self._context = context
-        self._callee = nodes[0]
-        self._arguments = []
+        self._callee = callee
+        self._arguments = arguments
+
+    @classmethod
+    def parse_action(cls, context, nodes):
+        callee = nodes[0]
+        arguments = []
         if len(nodes) > 1:
             if isinstance(nodes[1], list):                
-                self._arguments.extend(nodes[1])
+                arguments.extend(nodes[1])
             else:
-                self._arguments.append(nodes[1])
+                arguments.append(nodes[1])
         if len(nodes) > 2:
-            self._arguments.extend(nodes[2])
+            arguments.extend(nodes[2])
+        return cls(callee, arguments, context=context)
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
@@ -64,50 +71,106 @@ class Call:
             except:
                 print(a)
 
-class Identifier:
-    def __init__(self, context, node):
+class Expressions:
+    def __init__(self, expressions, context=None):
         self._context = context
-        if node.endswith(':'):
-            node = node[:-1].rstrip()
-        self._string = node
+        self._expressions = tuple(expressions)
+
+    @classmethod
+    def parse_action(cls, context, nodes):
+        expressions = []
+        if len(nodes) > 1:
+            expressions.extend(nodes[1])
+        return cls(expressions, context=context)
+
+    def _print_attributes(self, indent):
+        pass
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}{}".format(indent_token*first_indent, self._string))
+        print("{}{}".format(indent_token*first_indent,
+                            self.__class__.__name__))
+        self._print_attributes(indent)
+        print("{}expressions:".format(
+            indent_token*(indent+1)))
+        for a in self._expressions:
+            try:
+                a.print(indent=indent+2)
+            except:
+                print(a)
+
+class File(Expressions):
+    def __init__(self, expressions, context=None):
+        super().__init__(expressions, context=context)
+        if context and hasattr(context, "file_name"):
+            self._path = context.file_name
+        else:
+            self._path = "<None>"
+
+    @classmethod
+    def parse_action(cls, context, nodes):
+        return cls(nodes[0]._expressions, context=context)
+
+    def _print_attributes(self, indent):
+        print("{}path: {}".format(indent_token*(indent+1), self._path))
+
+class Comma_Separated_Expressions(Expressions):
+    @classmethod
+    def parse_action(cls, context, nodes):
+        expressions = [nodes[0]]
+        if isinstance(nodes[2], Comma_Separated_Expressions):                
+            expressions.extend(nodes[2]._expressions)
+        else:
+            expressions.append(nodes[2])
+        return cls(expressions, context=context)
 
 input_string = r"""
-f a : c d e b: d e
+a
+a, b, f a : c d e b: d e
 """
+#f2 (b k1: a k2: b c)
 
 grammar = r"""
 file:
-    statement_separators?
-    statement+[statement_separators]
-    statement_separators?
+    expressions
     EOF;
-statement_separators:
-    statement_separator+;
-statement_separator:
+expressions:
+    expression_separators?
+    expression+[expression_separators]
+    expression_separators? |
+    expression_separators?;
+expression_separators:
+    expression_separator+;
+expression_separator:
     indent | ";";
-statement:
-    named_expression |
-    expression;
-expression:
-    identifier |
-    complex_call;
-simple_expression:
-    identifier |
-    simple_call;
-simple_call:
-    identifier simple_expression;
-complex_call:
-    identifier named_expression+ |
-    identifier simple_expression named_expression*;
-named_expression:
-    key simple_expression;
-identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
-key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
 indent: "\n";
+expression:
+    non_sequence_expression |
+    named_expression |
+    comma_separated_expressions;
+non_sequence_expression:
+    identifier |
+    call |
+    parenthesized_expression;
+identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
+call:
+    identifier named_expression+ |
+    identifier inner_expression named_expression*;
+named_expression:
+    key inner_expression;
+key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
+inner_expression:
+    identifier |
+    inner_call |
+    parenthesized_expression;
+inner_call:
+    identifier inner_expression;
+parenthesized_expression:
+    "(" expression ")";
+comma_separated_expressions:
+    non_sequence_expression comma comma_separated_expressions |
+    non_sequence_expression comma non_sequence_expression;
+comma: ",";
 
 LAYOUT:
     discardable+ | EMPTY;
@@ -117,12 +180,15 @@ spaces: / +/;
 """
 
 actions = {
-    'file': File,
-    'simple_call': Call,
-    'complex_call': Call,
-    'named_expression': Named_Expression,
-    'identifier': Identifier,
-    'key': Identifier,
+    'file': File.parse_action,
+    'expressions': Expressions.parse_action,
+    'identifier': Identifier.parse_action,
+    'call': Call.parse_action,
+    'named_expression': Named_Expression.parse_action,
+    'key': Identifier.parse_action,
+    'inner_call': Call.parse_action,
+    'parenthesized_expression': lambda context, nodes: nodes[1],
+    'comma_separated_expressions': Comma_Separated_Expressions.parse_action,
 }
 
 g = Grammar.from_string(grammar)
