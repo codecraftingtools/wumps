@@ -49,8 +49,8 @@ class Call:
         callee = nodes[0]
         arguments = []
         if len(nodes) > 1:
-            if isinstance(nodes[1], list):                
-                arguments.extend(nodes[1])
+            if isinstance(nodes[1], Expressions):                
+                arguments.extend(nodes[1]._expressions)
             else:
                 arguments.append(nodes[1])
         if len(nodes) > 2:
@@ -72,7 +72,7 @@ class Call:
                 print(a)
 
 class Expressions:
-    def __init__(self, expressions, context=None):
+    def __init__(self, expressions=[], context=None):
         self._context = context
         self._expressions = tuple(expressions)
 
@@ -114,19 +114,25 @@ class File(Expressions):
     def _print_attributes(self, indent):
         print("{}path: {}".format(indent_token*(indent+1), self._path))
 
-class Comma_Separated_Expressions(Expressions):
+class Sequence(Expressions):
     @classmethod
-    def parse_action(cls, context, nodes):
+    def comma_parse_action(cls, context, nodes):
         expressions = [nodes[0]]
-        if isinstance(nodes[2], Comma_Separated_Expressions):                
-            expressions.extend(nodes[2]._expressions)
-        else:
-            expressions.append(nodes[2])
+        if len(nodes) > 2:
+            if isinstance(nodes[2], Sequence):                
+                expressions.extend(nodes[2]._expressions)
+            else:
+                expressions.append(nodes[2])
         return cls(expressions, context=context)
+
+    @classmethod
+    def braced_block_parse_action(cls, context, nodes):
+        return cls(nodes[1]._expressions, context=context)
 
 input_string = r"""
 a
-a, b, f a : c d e b: d e
+{b;c}
+a, b, f b (aa,) a : c d e b: d {e}
 """
 #f2 (b k1: a k2: b c)
 
@@ -135,42 +141,50 @@ file:
     expressions
     EOF;
 expressions:
-    expression_separators?
-    expression+[expression_separators]
-    expression_separators? |
-    expression_separators?;
-expression_separators:
-    expression_separator+;
-expression_separator:
+    primary_delimiters? expression+[primary_delimiters] primary_delimiters? |
+    primary_delimiters?;
+primary_delimiters:
+    primary_delimiter+;
+primary_delimiter:
     indent | ";";
 indent: "\n";
 expression:
-    non_sequence_expression |
-    named_expression |
-    comma_separated_expressions;
-non_sequence_expression:
-    identifier |
-    call |
-    parenthesized_expression;
-identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
-call:
-    identifier named_expression+ |
-    identifier inner_expression named_expression*;
-named_expression:
-    key inner_expression;
-key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
-inner_expression:
-    identifier |
-    inner_call |
-    parenthesized_expression;
-inner_call:
-    identifier inner_expression;
-parenthesized_expression:
-    "(" expression ")";
-comma_separated_expressions:
-    non_sequence_expression comma comma_separated_expressions |
-    non_sequence_expression comma non_sequence_expression;
+    comma_delimited_sequence |
+    non_sequence;
+comma_delimited_sequence:
+    non_sequence comma comma_delimited_sequence |
+    non_sequence comma non_sequence |
+    non_sequence comma;
 comma: ",";
+non_sequence:
+    named_expression |
+    anonymous_expression;
+named_expression:
+    key anonymous_expression;
+key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
+anonymous_expression:
+    parenthesized_expression |
+    braced_block |
+    call |
+    identifier;
+parenthesized_expression:
+    "(" expression ")" |
+    "(" ")";
+braced_block:
+    "{" expressions "}";
+call:
+    identifier named_argument+ |
+    identifier argument named_argument*;
+identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
+named_argument:
+    key argument;
+argument:
+    parenthesized_expression |
+    braced_block |
+    chained_call |
+    identifier;
+chained_call:
+    identifier argument;
 
 LAYOUT:
     discardable+ | EMPTY;
@@ -182,13 +196,16 @@ spaces: / +/;
 actions = {
     'file': File.parse_action,
     'expressions': Expressions.parse_action,
-    'identifier': Identifier.parse_action,
-    'call': Call.parse_action,
+    'comma_delimited_sequence': Sequence.comma_parse_action,
     'named_expression': Named_Expression.parse_action,
     'key': Identifier.parse_action,
-    'inner_call': Call.parse_action,
-    'parenthesized_expression': lambda context, nodes: nodes[1],
-    'comma_separated_expressions': Comma_Separated_Expressions.parse_action,
+    'parenthesized_expression':
+        lambda context, nodes: nodes[1] if (len(nodes) > 2) else Sequence(),
+    'braced_block': Sequence.braced_block_parse_action,
+    'call': Call.parse_action,
+    'identifier': Identifier.parse_action,
+    'named_argument': Named_Expression.parse_action,
+    'chained_call': Call.parse_action,
 }
 
 g = Grammar.from_string(grammar)
