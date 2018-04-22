@@ -51,6 +51,8 @@ class Call:
         if len(nodes) > 1:
             if isinstance(nodes[1], Expressions):                
                 arguments.extend(nodes[1]._expressions)
+            elif isinstance(nodes[1], list):                
+                arguments.extend(nodes[1])
             else:
                 arguments.append(nodes[1])
         if len(nodes) > 2:
@@ -134,6 +136,7 @@ a
 {b;c}
 a, b, f b (aa,) a : c d e b: d {e}
 """
+#a d: z1 e: z3
 #f2 (b k1: a k2: b c)
 
 grammar = r"""
@@ -211,7 +214,7 @@ actions = {
 g = Grammar.from_string(grammar)
 
 parser = Parser(g, actions=actions,debug=0)
-#parser = GLRParser(g, actions=actions,debug=1)
+#parser = GLRParser(g, actions=actions,debug=0)
 
 file = parser.parse(input_string)
 if isinstance(file, list):
