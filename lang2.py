@@ -132,14 +132,13 @@ class Sequence(Expressions):
         return cls(nodes[1]._expressions, context=context)
 
 input_string = r"""
-if a b c ...
-  then:
-    a1
-    a2
-  else:
-    b
+if a b c then:
+     a1; a3
+     a2
+ else:
+     b
 a
-#{b;c}
+{b;c}
 #a, b, f b (aa,) a : c d e b: d {e}
 """
 #a d: z1 e: z3
@@ -226,17 +225,22 @@ blank_line:; // custom recognizer function
 
 class Whitespace_State:
     def __init__(self):
-        self._indent_stack = [("", False)]
+        self._indent_stack = [["", False, " "*999]]
         self._starting_continuation = False
+    def maximum_continuation_indent(self):
+        return len(self._indent_stack[-1][2])
+    def set_maximum_continuation_indent(self, max_indent):
+        if len(max_indent) < len(self._indent_stack[-1][2]):
+            self._indent_stack[-1][2] = max_indent
     def current_indent(self):
         return len(self._indent_stack[-1][0])
     def previous_indent(self):
-        if len(self._ident_stack > 1):
+        if len(self._indent_stack) > 1:
             return len(self._indent_stack[-2][0])
         else:
             return None
     def push_indent(self, indent):
-        self._indent_stack.append((indent,self._starting_continuation))
+        self._indent_stack.append([indent,self._starting_continuation," "*999])
         self._starting_continuation = False
     def pop_indent(self):
         self._indent_stack.pop()
@@ -289,7 +293,8 @@ def continuation_line_indent_recognizer(input, pos):
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
-        if len(new_indent) > state.current_indent():
+        if (len(new_indent) > state.current_indent() and
+            len(new_indent) <= state.maximum_continuation_indent()):
             return input[pos:m.end()]
 
 def continuation_line_dedent_recognizer(input, pos):
@@ -338,7 +343,15 @@ def block_indent_action(context, node):
     return node
 
 def block_dedent_action(context, node):
+    partial_indent = False
+    m = new_line_re.match(context.input_str, context.start_position)
+    if m:
+        new_indent = context.input_str[context.start_position+1:m.end()]
+        if len(new_indent) > state.previous_indent():
+            partial_indent = True
     state.pop_indent()
+    if partial_indent:
+        state.start_continuation()
     return node
 
 def continuation_line_marker_action(context, node):
@@ -347,10 +360,19 @@ def continuation_line_marker_action(context, node):
 
 def continuation_line_indent_action(context, node):
     state.push_indent(node[1:])
+    state.set_maximum_continuation_indent(" "*state.current_indent())
     return node
 
 def continuation_line_dedent_action(context, node):
+    partial_indent = False
+    m = new_line_re.match(context.input_str, context.start_position)
+    if m:
+        new_indent = context.input_str[context.start_position+1:m.end()]
+        if len(new_indent) > state.previous_indent():
+            partial_indent = True
     state.pop_indent()
+    if partial_indent:
+        state.start_continuation()
     return node
 
 actions = {
