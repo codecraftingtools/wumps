@@ -132,13 +132,13 @@ class Sequence(Expressions):
         return cls(nodes[1]._expressions, context=context)
 
 input_string = r"""
-if a b c then:
+if a b c then: {
      a1; a3
      a2
- else:
-     b
+ } else: (
+      )
 a
-{b;c}
+#if (a b) then: {b;c} else: {d; e()}
 #a, b, f b (aa,) a : c d e b: d {e}
 """
 #a d: z1 e: z3
@@ -177,10 +177,14 @@ anonymous_expression:
     call |
     identifier;
 parenthesized_expression:
-    "(" expression ")" |
-    "(" ")";
+    open_parenthesis expression close_parenthesis |
+    open_parenthesis close_parenthesis;
+open_parenthesis: "(";
+close_parenthesis: ")";
 braced_block:
-    "{" expressions "}";
+    open_brace expressions close_brace;
+open_brace: "{";
+close_brace: "}";
 indented_block:
     block_indent expressions block_dedent;
 block_indent:; // custom recognizer function
@@ -211,6 +215,7 @@ discardable:
     continuation_line_indent |
     continuation_line_dedent |
     continuation_line_align |
+    braced_new_line |
     blank_line;
 insignficant_spaces: / +/;
 escaped_newline: /\\ *\n/;
@@ -220,6 +225,7 @@ continuation_line_marker:; // custom recognizer function
 continuation_line_indent:; // custom recognizer function
 continuation_line_dedent:; // custom recognizer function
 continuation_line_align:; // custom recognizer function
+braced_new_line:; // custom recognizer function
 blank_line:; // custom recognizer function
 """
 
@@ -227,6 +233,7 @@ class Whitespace_State:
     def __init__(self):
         self._indent_stack = [["", False, " "*999]]
         self._starting_continuation = False
+        self._bracket_depth = 0
     def maximum_continuation_indent(self):
         return len(self._indent_stack[-1][2])
     def set_maximum_continuation_indent(self, max_indent):
@@ -250,12 +257,19 @@ class Whitespace_State:
         return self._starting_continuation
     def start_continuation(self):
         self._starting_continuation = True
+    def nest_bracket(self):
+        self._bracket_depth += 1
+    def unnest_bracket(self):
+        if self._bracket_depth > 0:
+            self._bracket_depth -= 1
+    def bracket_depth(self):
+        return self._bracket_depth
 
 state = Whitespace_State()
 
 new_line_re = re.compile(r"\n *")
 def align_recognizer(input, pos):
-    if state.starting_continuation() or state.in_continuation():
+    if state.bracket_depth() or state.starting_continuation() or state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -264,7 +278,7 @@ def align_recognizer(input, pos):
             return input[pos:m.end()]
 
 def block_indent_recognizer(input, pos):
-    if state.starting_continuation():
+    if state.bracket_depth() or state.starting_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -273,7 +287,7 @@ def block_indent_recognizer(input, pos):
             return input[pos:m.end()]
 
 def block_dedent_recognizer(input, pos):
-    if state.starting_continuation() or state.in_continuation():
+    if state.bracket_depth() or state.starting_continuation() or state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -283,12 +297,14 @@ def block_dedent_recognizer(input, pos):
 
 continuation_line_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def continuation_line_marker_recognizer(input, pos):
+    if state.bracket_depth():
+        return None
     m = continuation_line_marker_re.match(input, pos)
     if m:
         return input[pos:m.end()]
 
 def continuation_line_indent_recognizer(input, pos):
-    if not state.starting_continuation():
+    if state.bracket_depth() or not state.starting_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -298,7 +314,7 @@ def continuation_line_indent_recognizer(input, pos):
             return input[pos:m.end()]
 
 def continuation_line_dedent_recognizer(input, pos):
-    if not state.in_continuation():
+    if state.bracket_depth() or not state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -307,13 +323,20 @@ def continuation_line_dedent_recognizer(input, pos):
             return ""
 
 def continuation_line_align_recognizer(input, pos):
-    if not state.in_continuation():
+    if state.bracket_depth() or not state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
         new_indent = input[pos+1:m.end()]
         if len(new_indent) == state.current_indent():
             return input[pos:m.end()]
+
+def braced_new_line_recognizer(input, pos):
+    if state.bracket_depth() == 0:
+        return None
+    m = new_line_re.match(input, pos)
+    if m:
+        return input[pos:m.end()]
 
 blank_line_re = re.compile(r"\n *(?=\n)")
 def blank_line_recognizer(input, pos):
@@ -329,6 +352,7 @@ recognizers = {
     'align': align_recognizer,
     'block_indent': block_indent_recognizer,
     'block_dedent': block_dedent_recognizer,
+    'braced_new_line': braced_new_line_recognizer,
     'blank_line': blank_line_recognizer,
     'continuation_line_marker': continuation_line_marker_recognizer,
     'continuation_line_indent': continuation_line_indent_recognizer,
@@ -375,6 +399,14 @@ def continuation_line_dedent_action(context, node):
         state.start_continuation()
     return node
 
+def open_brace_action(context, node):
+    state.nest_bracket()
+    return node
+
+def close_brace_action(context, node):
+    state.unnest_bracket()
+    return node
+
 actions = {
     'file': File.parse_action,
     'expressions': Expressions.parse_action,
@@ -383,7 +415,11 @@ actions = {
     'key': Identifier.parse_action,
     'parenthesized_expression':
         lambda context, nodes: nodes[1] if (len(nodes) > 2) else Sequence(),
+    'open_parenthesis': open_brace_action,
+    'close_parenthesis': close_brace_action,
     'braced_block': Sequence.braced_block_parse_action,
+    'open_brace': open_brace_action,
+    'close_brace': close_brace_action,
     'indented_block': Sequence.braced_block_parse_action,
     'call': Call.parse_action,
     'identifier': Identifier.parse_action,
