@@ -171,10 +171,12 @@ named_expression:
     key anonymous_expression;
 key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
 anonymous_expression:
+    term |
+    call;
+term:
     parenthesized_expression |
     braced_block |
     indented_block |
-    call |
     identifier;
 parenthesized_expression:
     open_parenthesis expression close_parenthesis |
@@ -189,20 +191,20 @@ indented_block:
     block_indent expressions block_dedent;
 block_indent:; // custom recognizer function
 block_dedent:; // custom recognizer function
-call:
-    identifier named_argument+ |
-    identifier argument named_argument*;
 identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
+call:
+    callee named_argument+ |
+    callee argument named_argument*;
+callee:
+    identifier |
+    parenthesized_expression;
 named_argument:
     key argument;
 argument:
-    parenthesized_expression |
-    braced_block |
-    indented_block |
-    chained_call |
-    identifier;
+    term |
+    chained_call;
 chained_call:
-    identifier argument;
+    callee argument;
 
 LAYOUT:
     discardable+ | EMPTY;
@@ -352,12 +354,13 @@ recognizers = {
     'align': align_recognizer,
     'block_indent': block_indent_recognizer,
     'block_dedent': block_dedent_recognizer,
-    'braced_new_line': braced_new_line_recognizer,
-    'blank_line': blank_line_recognizer,
+
     'continuation_line_marker': continuation_line_marker_recognizer,
     'continuation_line_indent': continuation_line_indent_recognizer,
     'continuation_line_dedent': continuation_line_dedent_recognizer,
     'continuation_line_align': continuation_line_align_recognizer,
+    'braced_new_line': braced_new_line_recognizer,
+    'blank_line': blank_line_recognizer,
 }
 
 grammar = Grammar.from_string(grammar_string, recognizers=recognizers)
@@ -421,13 +424,13 @@ actions = {
     'open_brace': open_brace_action,
     'close_brace': close_brace_action,
     'indented_block': Sequence.braced_block_parse_action,
-    'call': Call.parse_action,
+    'block_indent': block_indent_action,
+    'block_dedent': block_dedent_action,
     'identifier': Identifier.parse_action,
+    'call': Call.parse_action,
     'named_argument': Named_Expression.parse_action,
     'chained_call': Call.parse_action,
 
-    'block_indent': block_indent_action,
-    'block_dedent': block_dedent_action,
     'continuation_line_marker': continuation_line_marker_action,
     'continuation_line_indent': continuation_line_indent_action,
     'continuation_line_dedent': continuation_line_dedent_action,
