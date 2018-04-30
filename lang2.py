@@ -132,12 +132,17 @@ class Sequence(Expressions):
         return cls(nodes[1]._expressions, context=context)
 
 input_string = r"""
-if a b c then: {
-     a1; a3
-     a2
- } else: (
-      )
-a
+circle
+  color: black
+  radius: four
+  outline: true
+  width: five
+#if a b c then: {
+#     a1; a3
+#     a2
+# } else: (
+#      )
+#a
 #if (a b) then: {b;c} else: {d; e()}
 #a, b, f b (aa,) a : c d e b: d {e}
 """
@@ -346,9 +351,9 @@ def blank_line_recognizer(input, pos):
     if m:
         return input[pos:m.end()]
     m = new_line_re.match(input, pos)
-    if m:
-        if m.end() == len(input):
-            return input[pos:m.end()]
+    #if m:
+    #    if m.end() == len(input):
+    #        return input[pos:m.end()]
 
 recognizers = {
     'align': align_recognizer,
