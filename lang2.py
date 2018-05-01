@@ -281,14 +281,17 @@ class Whitespace_State:
     def unnest_bracket(self):
         if self._bracket_depth > 0:
             self._bracket_depth -= 1
-    def bracket_depth(self):
-        return self._bracket_depth
+    def is_bracketed(self):
+        if self._bracket_depth:
+            return True
+        else:
+            return False
 
 state = Whitespace_State()
 
 new_line_re = re.compile(r"\n *")
 def unbracketed_aligned_indent_recognizer(input, pos):
-    if (state.bracket_depth() or
+    if (state.is_bracketed() or
         state.starting_continuation() or 
         state.in_continuation()):
         return None
@@ -299,7 +302,7 @@ def unbracketed_aligned_indent_recognizer(input, pos):
             return input[pos:m.end()]
 
 def unbracketed_increased_indent_recognizer(input, pos):
-    if state.bracket_depth() or state.starting_continuation():
+    if state.is_bracketed() or state.starting_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -308,7 +311,7 @@ def unbracketed_increased_indent_recognizer(input, pos):
             return input[pos:m.end()]
 
 def unbracketed_decreased_indent_one_level_recognizer(input, pos):
-    if (state.bracket_depth() or
+    if (state.is_bracketed() or
         state.starting_continuation() or
         state.in_continuation()):
         return None
@@ -320,7 +323,7 @@ def unbracketed_decreased_indent_one_level_recognizer(input, pos):
 
 continuation_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def unbracketed_continuation_marker_recognizer(input, pos):
-    if state.bracket_depth():
+    if state.is_bracketed():
         return None
     m = continuation_marker_re.match(input, pos)
     if m:
@@ -328,7 +331,7 @@ def unbracketed_continuation_marker_recognizer(input, pos):
 
 def unbracketed_increased_indent_after_continuation_marker_recognizer(
         input, pos):
-    if state.bracket_depth() or not state.starting_continuation():
+    if state.is_bracketed() or not state.starting_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -339,7 +342,7 @@ def unbracketed_increased_indent_after_continuation_marker_recognizer(
 
 def unbracketed_decreased_indent_one_level_in_continuation_recognizer(
         input, pos):
-    if state.bracket_depth() or not state.in_continuation():
+    if state.is_bracketed() or not state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -348,7 +351,7 @@ def unbracketed_decreased_indent_one_level_in_continuation_recognizer(
             return ""
 
 def unbracketed_aligned_indent_in_continuation_recognizer(input, pos):
-    if state.bracket_depth() or not state.in_continuation():
+    if state.is_bracketed() or not state.in_continuation():
         return None
     m = new_line_re.match(input, pos)
     if m:
@@ -357,7 +360,7 @@ def unbracketed_aligned_indent_in_continuation_recognizer(input, pos):
             return input[pos:m.end()]
 
 def bracketed_new_line_recognizer(input, pos):
-    if state.bracket_depth() == 0:
+    if not state.is_bracketed():
         return None
     m = new_line_re.match(input, pos)
     if m:
