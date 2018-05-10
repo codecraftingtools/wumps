@@ -13,7 +13,7 @@ class Identifier:
         self._string = id_string
 
     @classmethod
-    def parse_action(cls, context, node):
+    def parser_action(cls, context, node):
         return cls(node, context=context)
 
     def print(self, indent=0, first_indent=None):
@@ -27,7 +27,7 @@ class Named_Expression:
         self._expression = expression
 
     @classmethod
-    def parse_action(cls, context, nodes):
+    def parser_action(cls, context, nodes):
         return cls(nodes[0], nodes[1], context=context)
 
     def print(self, indent=0, first_indent=None):
@@ -45,7 +45,7 @@ class Call:
         self._arguments = arguments
 
     @classmethod
-    def parse_action(cls, context, nodes):
+    def parser_action(cls, context, nodes):
         callee = nodes[0]
         arguments = []
         if len(nodes) > 1:
@@ -79,7 +79,7 @@ class Expressions:
         self._expressions = tuple(expressions)
 
     @classmethod
-    def parse_action(cls, context, nodes):
+    def parser_action(cls, context, nodes):
         expressions = []
         if len(nodes) > 1:
             expressions.extend(nodes[1])
@@ -110,7 +110,7 @@ class File(Expressions):
             self._path = "<None>"
 
     @classmethod
-    def parse_action(cls, context, nodes):
+    def parser_action(cls, context, nodes):
         return cls(nodes[0]._expressions, context=context)
 
     def _print_attributes(self, indent):
@@ -118,7 +118,7 @@ class File(Expressions):
 
 class Sequence(Expressions):
     @classmethod
-    def comma_parse_action(cls, context, nodes):
+    def comma_parser_action(cls, context, nodes):
         expressions = [nodes[0]]
         if len(nodes) > 2:
             if isinstance(nodes[2], Sequence):                
@@ -128,7 +128,7 @@ class Sequence(Expressions):
         return cls(expressions, context=context)
 
     @classmethod
-    def block_parse_action(cls, context, nodes):
+    def block_parser_action(cls, context, nodes):
         return cls(nodes[1]._expressions, context=context)
 
 input_string = r"""
@@ -289,89 +289,98 @@ class Whitespace_State:
 
 state = Whitespace_State()
 
-new_line_re = re.compile(r"\n *")
-def unbracketed_aligned_indent_recognizer(input, pos):
-    if (state.is_bracketed() or
-        state.starting_continuation() or 
-        state.in_continuation()):
+new_line_and_possible_indent_re = re.compile(r"\n *")
+def match_new_line_and_possible_indent(input, pos):
+    match = new_line_and_possible_indent_re.match(input, pos)
+    if match is None:
         return None
-    m = new_line_re.match(input, pos)
-    if m:
-        new_indent = input[pos+1:m.end()]
-        if len(new_indent) == state.current_indent():
-            return input[pos:m.end()]
+    return input[pos:match.end()]
+
+def unbracketed_aligned_indent_recognizer(input, pos):
+    if (not state.is_bracketed() and
+        not state.starting_continuation() and 
+        not state.in_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if len(new_indent) == state.current_indent():
+                return new_line_and_possible_indent
 
 def unbracketed_increased_indent_recognizer(input, pos):
-    if state.is_bracketed() or state.starting_continuation():
-        return None
-    m = new_line_re.match(input, pos)
-    if m:
-        new_indent = input[pos+1:m.end()]
-        if len(new_indent) > state.current_indent():
-            return input[pos:m.end()]
+    if (not state.is_bracketed() and
+        not state.starting_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if len(new_indent) > state.current_indent():
+                return new_line_and_possible_indent
 
 def unbracketed_decreased_indent_one_level_recognizer(input, pos):
-    if (state.is_bracketed() or
-        state.starting_continuation() or
-        state.in_continuation()):
-        return None
-    m = new_line_re.match(input, pos)
-    if m:
-        new_indent = input[pos+1:m.end()]
-        if len(new_indent) < state.current_indent():
-            return ""
+    if (not state.is_bracketed() and
+        not state.starting_continuation() and
+        not state.in_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if len(new_indent) < state.current_indent():
+                return ""
 
 continuation_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def unbracketed_continuation_marker_recognizer(input, pos):
     if state.is_bracketed():
         return None
-    m = continuation_marker_re.match(input, pos)
-    if m:
-        return input[pos:m.end()]
+    match = continuation_marker_re.match(input, pos)
+    if match:
+        return input[pos:match.end()]
 
 def unbracketed_increased_indent_after_continuation_marker_recognizer(
         input, pos):
-    if state.is_bracketed() or not state.starting_continuation():
-        return None
-    m = new_line_re.match(input, pos)
-    if m:
-        new_indent = input[pos+1:m.end()]
-        if (len(new_indent) > state.current_indent() and
-            len(new_indent) <= state.maximum_continuation_indent()):
-            return input[pos:m.end()]
+    if (not state.is_bracketed() and
+        state.starting_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if (len(new_indent) > state.current_indent() and
+                len(new_indent) <= state.maximum_continuation_indent()):
+                return new_line_and_possible_indent
 
 def unbracketed_decreased_indent_one_level_in_continuation_recognizer(
         input, pos):
-    if state.is_bracketed() or not state.in_continuation():
-        return None
-    m = new_line_re.match(input, pos)
-    if m:
-        new_indent = input[pos+1:m.end()]
-        if len(new_indent) < state.current_indent():
-            return ""
+    if (not state.is_bracketed() and
+        state.in_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if len(new_indent) < state.current_indent():
+                return ""
 
 def unbracketed_aligned_indent_in_continuation_recognizer(input, pos):
-    if state.is_bracketed() or not state.in_continuation():
-        return None
-    m = new_line_re.match(input, pos)
-    if m:
-        new_indent = input[pos+1:m.end()]
-        if len(new_indent) == state.current_indent():
-            return input[pos:m.end()]
+    if (not state.is_bracketed() and
+        state.in_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if len(new_indent) == state.current_indent():
+                return new_line_and_possible_indent
 
 def bracketed_new_line_recognizer(input, pos):
-    if not state.is_bracketed():
-        return None
-    m = new_line_re.match(input, pos)
-    if m:
-        return input[pos:m.end()]
+    if state.is_bracketed():
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            return new_line_and_possible_indent
 
 blank_line_re = re.compile(r"\n *(?=\n)")
 def blank_line_recognizer(input, pos):
-    m = blank_line_re.match(input, pos)
-    if m:
-        return input[pos:m.end()]
-    m = new_line_re.match(input, pos)
+    match = blank_line_re.match(input, pos)
+    if match:
+        return input[pos:match.end()]
 
 recognizers = {
     'unbracketed_aligned_indent': unbracketed_aligned_indent_recognizer,
@@ -399,9 +408,10 @@ def unbracketed_increased_indent_action(context, node):
 
 def unbracketed_decreased_indent_one_level_action(context, node):
     partial_indent = False
-    m = new_line_re.match(context.input_str, context.start_position)
-    if m:
-        new_indent = context.input_str[context.start_position+1:m.end()]
+    new_line_and_possible_indent = match_new_line_and_possible_indent(
+        context.input_str, context.start_position)
+    if new_line_and_possible_indent is not None:
+        new_indent = new_line_and_possible_indent[1:]
         if len(new_indent) > state.previous_indent():
             partial_indent = True
     state.pop_indent()
@@ -422,9 +432,10 @@ def unbracketed_increased_indent_after_continuation_marker_action(
 def unbracketed_decreased_indent_one_level_in_continuation_action(
         context, node):
     partial_indent = False
-    m = new_line_re.match(context.input_str, context.start_position)
-    if m:
-        new_indent = context.input_str[context.start_position+1:m.end()]
+    new_line_and_possible_indent = match_new_line_and_possible_indent(
+        context.input_str, context.start_position)
+    if new_line_and_possible_indent is not None:
+        new_indent = new_line_and_possible_indent[1:]
         if len(new_indent) > state.previous_indent():
             partial_indent = True
     state.pop_indent()
@@ -441,26 +452,26 @@ def close_bracket_action(context, node):
     return node
 
 actions = {
-    'file': File.parse_action,
-    'expressions': Expressions.parse_action,
-    'comma_delimited_sequence': Sequence.comma_parse_action,
-    'named_expression': Named_Expression.parse_action,
-    'key': Identifier.parse_action,
+    'file': File.parser_action,
+    'expressions': Expressions.parser_action,
+    'comma_delimited_sequence': Sequence.comma_parser_action,
+    'named_expression': Named_Expression.parser_action,
+    'key': Identifier.parser_action,
     'parenthesized_expression':
         lambda context, nodes: nodes[1] if (len(nodes) > 2) else Sequence(),
     'open_parenthesis': open_bracket_action,
     'close_parenthesis': close_bracket_action,
-    'braced_block': Sequence.block_parse_action,
+    'braced_block': Sequence.block_parser_action,
     'open_brace': open_bracket_action,
     'close_brace': close_bracket_action,
-    'unbracketed_indented_block': Sequence.block_parse_action,
+    'unbracketed_indented_block': Sequence.block_parser_action,
     'unbracketed_increased_indent': unbracketed_increased_indent_action,
     'unbracketed_decreased_indent_one_level':
         unbracketed_decreased_indent_one_level_action,
-    'identifier': Identifier.parse_action,
-    'call': Call.parse_action,
-    'named_argument': Named_Expression.parse_action,
-    'chained_call': Call.parse_action,
+    'identifier': Identifier.parser_action,
+    'call': Call.parser_action,
+    'named_argument': Named_Expression.parser_action,
+    'chained_call': Call.parser_action,
 
     'unbracketed_continuation_marker': unbracketed_continuation_marker_action,
     'unbracketed_increased_indent_after_continuation_marker':
