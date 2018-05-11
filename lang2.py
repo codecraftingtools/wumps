@@ -245,7 +245,7 @@ unbracketed_increased_indent_after_continuation_marker:; // custom recognizer
 unbracketed_decreased_indent_one_level_in_continuation:; // custom recognizer
 unbracketed_aligned_indent_in_continuation:; // custom recognizer
 bracketed_new_line:; // custom recognizer
-blank_line:; // custom recognizer
+blank_line: /\n *(?=\n)/;
 """
 
 class Whitespace_State:
@@ -376,12 +376,6 @@ def bracketed_new_line_recognizer(input, pos):
         if new_line_and_possible_indent is not None:
             return new_line_and_possible_indent
 
-blank_line_re = re.compile(r"\n *(?=\n)")
-def blank_line_recognizer(input, pos):
-    match = blank_line_re.match(input, pos)
-    if match:
-        return input[pos:match.end()]
-
 recognizers = {
     'unbracketed_aligned_indent': unbracketed_aligned_indent_recognizer,
     'unbracketed_increased_indent': unbracketed_increased_indent_recognizer,
@@ -397,7 +391,6 @@ recognizers = {
     'unbracketed_aligned_indent_in_continuation':
         unbracketed_aligned_indent_in_continuation_recognizer,
     'bracketed_new_line': bracketed_new_line_recognizer,
-    'blank_line': blank_line_recognizer,
 }
 
 grammar = Grammar.from_string(grammar_string, recognizers=recognizers)
