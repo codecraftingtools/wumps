@@ -252,7 +252,7 @@ unbracketed_decreased_indent_one_level_in_continuation:;
 unbracketed_aligned_indent_in_continuation:;
 """
 
-class Whitespace_State:
+class Extra_State:
     def __init__(self):
         self._indent_stack = [["", False, " "*999]]
         self._starting_continuation = False
@@ -291,7 +291,7 @@ class Whitespace_State:
         else:
             return False
 
-state = Whitespace_State()
+state = Extra_State()
 
 new_line_and_possible_indent_re = re.compile(r"\n *")
 def match_new_line_and_possible_indent(input, pos):
@@ -399,6 +399,14 @@ recognizers = {
 
 grammar = Grammar.from_string(grammar_string, recognizers=recognizers)
 
+def open_bracket_action(context, node):
+    state.nest_bracket()
+    return node
+
+def close_bracket_action(context, node):
+    state.unnest_bracket()
+    return node
+
 def unbracketed_increased_indent_action(context, node):
     state.push_indent(node[1:])
     return node
@@ -414,14 +422,6 @@ def unbracketed_decreased_indent_one_level_action(context, node):
     state.pop_indent()
     if partial_indent:
         state.start_continuation()
-    return node
-
-def open_bracket_action(context, node):
-    state.nest_bracket()
-    return node
-
-def close_bracket_action(context, node):
-    state.unnest_bracket()
     return node
 
 def unbracketed_continuation_marker_action(context, node):
@@ -448,27 +448,14 @@ def unbracketed_decreased_indent_one_level_in_continuation_action(
         state.start_continuation()
     return node
 
-actions = {
-    'file': File.parser_action,
-    'expressions': Expressions.parser_action,
-    'comma_delimited_sequence': Sequence.comma_parser_action,
-    'named_expression': Named_Expression.parser_action,
-    'key': Identifier.parser_action,
-    'parenthesized_expression': lambda context, nodes: nodes[1],
+side_effects = {
     'open_parenthesis': open_bracket_action,
     'close_parenthesis': close_bracket_action,
-    'empty_parentheses': lambda context, nodes: Sequence(),
-    'braced_block': Sequence.block_parser_action,
     'open_brace': open_bracket_action,
     'close_brace': close_bracket_action,
-    'unbracketed_indented_block': Sequence.block_parser_action,
     'unbracketed_increased_indent': unbracketed_increased_indent_action,
     'unbracketed_decreased_indent_one_level':
         unbracketed_decreased_indent_one_level_action,
-    'identifier': Identifier.parser_action,
-    'call': Call.parser_action,
-    'named_argument': Named_Expression.parser_action,
-    'chained_call': Call.parser_action,
 
     'unbracketed_continuation_marker': unbracketed_continuation_marker_action,
     'unbracketed_increased_indent_after_continuation_marker':
@@ -476,6 +463,23 @@ actions = {
     'unbracketed_decreased_indent_one_level_in_continuation':
         unbracketed_decreased_indent_one_level_in_continuation_action,
 }
+
+actions = {
+    'file': File.parser_action,
+    'expressions': Expressions.parser_action,
+    'comma_delimited_sequence': Sequence.comma_parser_action,
+    'named_expression': Named_Expression.parser_action,
+    'key': Identifier.parser_action,
+    'parenthesized_expression': lambda context, nodes: nodes[1],
+    'empty_parentheses': lambda context, nodes: Sequence(),
+    'braced_block': Sequence.block_parser_action,
+    'unbracketed_indented_block': Sequence.block_parser_action,
+    'identifier': Identifier.parser_action,
+    'call': Call.parser_action,
+    'named_argument': Named_Expression.parser_action,
+    'chained_call': Call.parser_action,
+}
+actions.update(side_effects)
 
 parser = Parser(grammar, actions=actions,debug=0)
 #parser = GLRParser(grammar, actions=actions,debug=0)
