@@ -13,7 +13,7 @@ class Identifier:
         self._string = id_string
 
     @classmethod
-    def parser_action(cls, context, node):
+    def create_from_node(cls, context, node):
         return cls(node, context=context)
 
     def print(self, indent=0, first_indent=None):
@@ -27,7 +27,7 @@ class Named_Expression:
         self._expression = expression
 
     @classmethod
-    def parser_action(cls, context, nodes):
+    def create_from_nodes(cls, context, nodes):
         return cls(nodes[0], nodes[1], context=context)
 
     def print(self, indent=0, first_indent=None):
@@ -45,7 +45,7 @@ class Call:
         self._arguments = arguments
 
     @classmethod
-    def parser_action(cls, context, nodes):
+    def create_from_nodes(cls, context, nodes):
         callee = nodes[0]
         arguments = []
         if len(nodes) > 1:
@@ -79,7 +79,7 @@ class Expressions:
         self._expressions = tuple(expressions)
 
     @classmethod
-    def parser_action(cls, context, nodes):
+    def create_from_nodes(cls, context, nodes):
         expressions = []
         if len(nodes) > 1:
             expressions.extend(nodes[1])
@@ -110,7 +110,7 @@ class File(Expressions):
             self._path = "<None>"
 
     @classmethod
-    def parser_action(cls, context, nodes):
+    def create_from_nodes(cls, context, nodes):
         return cls(nodes[0]._expressions, context=context)
 
     def _print_attributes(self, indent):
@@ -118,7 +118,7 @@ class File(Expressions):
 
 class Sequence(Expressions):
     @classmethod
-    def comma_parser_action(cls, context, nodes):
+    def create_from_comma_separated_nodes(cls, context, nodes):
         expressions = [nodes[0]]
         if len(nodes) > 2:
             if isinstance(nodes[2], Sequence):                
@@ -128,7 +128,7 @@ class Sequence(Expressions):
         return cls(expressions, context=context)
 
     @classmethod
-    def block_parser_action(cls, context, nodes):
+    def create_from_block_nodes(cls, context, nodes):
         return cls(nodes[1]._expressions, context=context)
 
 input_string = r"""
@@ -399,19 +399,19 @@ recognizers = {
 
 grammar = Grammar.from_string(grammar_string, recognizers=recognizers)
 
-def open_bracket_action(context, node):
+def process_open_bracket(context, node):
     state.nest_bracket()
     return node
 
-def close_bracket_action(context, node):
+def process_close_bracket(context, node):
     state.unnest_bracket()
     return node
 
-def unbracketed_increased_indent_action(context, node):
+def process_unbracketed_increased_indent(context, node):
     state.push_indent(node[1:])
     return node
 
-def unbracketed_decreased_indent_one_level_action(context, node):
+def process_unbracketed_decreased_indent_one_level(context, node):
     partial_indent = False
     new_line_and_possible_indent = match_new_line_and_possible_indent(
         context.input_str, context.start_position)
@@ -424,17 +424,17 @@ def unbracketed_decreased_indent_one_level_action(context, node):
         state.start_continuation()
     return node
 
-def unbracketed_continuation_marker_action(context, node):
+def process_unbracketed_continuation_marker(context, node):
     state.start_continuation()
     return node
 
-def unbracketed_increased_indent_after_continuation_marker_action(
+def process_unbracketed_increased_indent_after_continuation_marker(
         context, node):
     state.push_indent(node[1:])
     state.set_maximum_continuation_indent(" "*state.current_indent())
     return node
 
-def unbracketed_decreased_indent_one_level_in_continuation_action(
+def process_unbracketed_decreased_indent_one_level_in_continuation(
         context, node):
     partial_indent = False
     new_line_and_possible_indent = match_new_line_and_possible_indent(
@@ -449,40 +449,40 @@ def unbracketed_decreased_indent_one_level_in_continuation_action(
     return node
 
 side_effects = {
-    'open_parenthesis': open_bracket_action,
-    'close_parenthesis': close_bracket_action,
-    'open_brace': open_bracket_action,
-    'close_brace': close_bracket_action,
-    'unbracketed_increased_indent': unbracketed_increased_indent_action,
+    'open_parenthesis': process_open_bracket,
+    'close_parenthesis': process_close_bracket,
+    'open_brace': process_open_bracket,
+    'close_brace': process_close_bracket,
+    'unbracketed_increased_indent': process_unbracketed_increased_indent,
     'unbracketed_decreased_indent_one_level':
-        unbracketed_decreased_indent_one_level_action,
+        process_unbracketed_decreased_indent_one_level,
 
-    'unbracketed_continuation_marker': unbracketed_continuation_marker_action,
+    'unbracketed_continuation_marker': process_unbracketed_continuation_marker,
     'unbracketed_increased_indent_after_continuation_marker':
-        unbracketed_increased_indent_after_continuation_marker_action,
+        process_unbracketed_increased_indent_after_continuation_marker,
     'unbracketed_decreased_indent_one_level_in_continuation':
-        unbracketed_decreased_indent_one_level_in_continuation_action,
+        process_unbracketed_decreased_indent_one_level_in_continuation,
 }
 
 actions = {
-    'file': File.parser_action,
-    'expressions': Expressions.parser_action,
-    'comma_delimited_sequence': Sequence.comma_parser_action,
-    'named_expression': Named_Expression.parser_action,
-    'key': Identifier.parser_action,
+    'file': File.create_from_nodes,
+    'expressions': Expressions.create_from_nodes,
+    'comma_delimited_sequence': Sequence.create_from_comma_separated_nodes,
+    'named_expression': Named_Expression.create_from_nodes,
+    'key': Identifier.create_from_node,
     'parenthesized_expression': lambda context, nodes: nodes[1],
     'empty_parentheses': lambda context, nodes: Sequence(),
-    'braced_block': Sequence.block_parser_action,
-    'unbracketed_indented_block': Sequence.block_parser_action,
-    'identifier': Identifier.parser_action,
-    'call': Call.parser_action,
-    'named_argument': Named_Expression.parser_action,
-    'chained_call': Call.parser_action,
+    'braced_block': Sequence.create_from_block_nodes,
+    'unbracketed_indented_block': Sequence.create_from_block_nodes,
+    'identifier': Identifier.create_from_node,
+    'call': Call.create_from_nodes,
+    'named_argument': Named_Expression.create_from_nodes,
+    'chained_call': Call.create_from_nodes,
 }
 actions.update(side_effects)
 
-parser = Parser(grammar, actions=actions,debug=0)
-#parser = GLRParser(grammar, actions=actions,debug=0)
+parser = Parser(grammar, actions=actions, debug=0)
+#parser = GLRParser(grammar, actions=actions, debug=0)
 
 file = parser.parse(input_string)
 if isinstance(file, list):
