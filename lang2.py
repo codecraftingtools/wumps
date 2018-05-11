@@ -134,9 +134,9 @@ class Sequence(Expressions):
 input_string = r"""
 if a ...
   then:
-   b
+   b (a)
  else:
-   c
+   c ()
 #circle ...
 #   a b
 #   c d
@@ -189,14 +189,16 @@ anonymous_expression:
     call;
 term:
     parenthesized_expression |
+    empty_parentheses |
     braced_block |
     unbracketed_indented_block |
     identifier;
 parenthesized_expression:
-    open_parenthesis expression close_parenthesis |
-    open_parenthesis close_parenthesis;
+    open_parenthesis expression close_parenthesis;
 open_parenthesis: "(";
 close_parenthesis: ")";
+empty_parentheses:
+    open_parenthesis close_parenthesis;
 braced_block:
     open_brace expressions close_brace;
 open_brace: "{";
@@ -452,10 +454,10 @@ actions = {
     'comma_delimited_sequence': Sequence.comma_parser_action,
     'named_expression': Named_Expression.parser_action,
     'key': Identifier.parser_action,
-    'parenthesized_expression':
-        lambda context, nodes: nodes[1] if (len(nodes) > 2) else Sequence(),
+    'parenthesized_expression': lambda context, nodes: nodes[1],
     'open_parenthesis': open_bracket_action,
     'close_parenthesis': close_bracket_action,
+    'empty_parentheses': lambda context, nodes: Sequence(),
     'braced_block': Sequence.block_parser_action,
     'open_brace': open_bracket_action,
     'close_brace': close_bracket_action,
