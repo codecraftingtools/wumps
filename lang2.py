@@ -225,27 +225,29 @@ chained_call:
 LAYOUT:
     discardable+ | EMPTY;
 discardable:
-    insignficant_spaces |
-    escaped_newline |
     hash_comment |
     hash_comment_line |
+    blank_line |
+    insignficant_spaces |
+    escaped_newline |
+    bracketed_new_line |
     unbracketed_continuation_marker |
     unbracketed_increased_indent_after_continuation_marker |
-    unbracketed_decreased_indent_one_level_in_continuation |
     unbracketed_aligned_indent_in_continuation |
-    // unbracketed_partially_decreased_indent |
-    bracketed_new_line |
-    blank_line;
-insignficant_spaces: / +/;
-escaped_newline: /\\ *\n/;
+    unbracketed_decreased_indent_one_level_in_continuation;
+    // unbracketed_partially_decreased_indent
 hash_comment: / *#.*(?=\n)/;
 hash_comment_line: /\n *#.*(?=\n)/;
-unbracketed_continuation_marker:; // custom recognizer
-unbracketed_increased_indent_after_continuation_marker:; // custom recognizer
-unbracketed_decreased_indent_one_level_in_continuation:; // custom recognizer
-unbracketed_aligned_indent_in_continuation:; // custom recognizer
-bracketed_new_line:; // custom recognizer
 blank_line: /\n *(?=\n)/;
+insignficant_spaces: / +/;
+escaped_newline: /\\ *\n/;
+
+// custom recognizers for discardable elements
+bracketed_new_line:;
+unbracketed_continuation_marker:;
+unbracketed_increased_indent_after_continuation_marker:;
+unbracketed_decreased_indent_one_level_in_continuation:;
+unbracketed_aligned_indent_in_continuation:;
 """
 
 class Whitespace_State:
@@ -328,6 +330,13 @@ def unbracketed_decreased_indent_one_level_recognizer(input, pos):
             if len(new_indent) < state.current_indent():
                 return ""
 
+def bracketed_new_line_recognizer(input, pos):
+    if state.is_bracketed():
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            return new_line_and_possible_indent
+
 continuation_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def unbracketed_continuation_marker_recognizer(input, pos):
     if state.is_bracketed():
@@ -348,6 +357,16 @@ def unbracketed_increased_indent_after_continuation_marker_recognizer(
                 len(new_indent) <= state.maximum_continuation_indent()):
                 return new_line_and_possible_indent
 
+def unbracketed_aligned_indent_in_continuation_recognizer(input, pos):
+    if (not state.is_bracketed() and
+        state.in_continuation()):
+        new_line_and_possible_indent = match_new_line_and_possible_indent(
+            input, pos)
+        if new_line_and_possible_indent is not None:
+            new_indent = new_line_and_possible_indent[1:]
+            if len(new_indent) == state.current_indent():
+                return new_line_and_possible_indent
+
 def unbracketed_decreased_indent_one_level_in_continuation_recognizer(
         input, pos):
     if (not state.is_bracketed() and
@@ -359,38 +378,21 @@ def unbracketed_decreased_indent_one_level_in_continuation_recognizer(
             if len(new_indent) < state.current_indent():
                 return ""
 
-def unbracketed_aligned_indent_in_continuation_recognizer(input, pos):
-    if (not state.is_bracketed() and
-        state.in_continuation()):
-        new_line_and_possible_indent = match_new_line_and_possible_indent(
-            input, pos)
-        if new_line_and_possible_indent is not None:
-            new_indent = new_line_and_possible_indent[1:]
-            if len(new_indent) == state.current_indent():
-                return new_line_and_possible_indent
-
-def bracketed_new_line_recognizer(input, pos):
-    if state.is_bracketed():
-        new_line_and_possible_indent = match_new_line_and_possible_indent(
-            input, pos)
-        if new_line_and_possible_indent is not None:
-            return new_line_and_possible_indent
-
 recognizers = {
     'unbracketed_aligned_indent': unbracketed_aligned_indent_recognizer,
     'unbracketed_increased_indent': unbracketed_increased_indent_recognizer,
     'unbracketed_decreased_indent_one_level':
         unbracketed_decreased_indent_one_level_recognizer,
 
+    'bracketed_new_line': bracketed_new_line_recognizer,
     'unbracketed_continuation_marker':
         unbracketed_continuation_marker_recognizer,
     'unbracketed_increased_indent_after_continuation_marker':
         unbracketed_increased_indent_after_continuation_marker_recognizer,
-    'unbracketed_decreased_indent_one_level_in_continuation':
-        unbracketed_decreased_indent_one_level_in_continuation_recognizer,
     'unbracketed_aligned_indent_in_continuation':
         unbracketed_aligned_indent_in_continuation_recognizer,
-    'bracketed_new_line': bracketed_new_line_recognizer,
+    'unbracketed_decreased_indent_one_level_in_continuation':
+        unbracketed_decreased_indent_one_level_in_continuation_recognizer,
 }
 
 grammar = Grammar.from_string(grammar_string, recognizers=recognizers)
@@ -410,6 +412,14 @@ def unbracketed_decreased_indent_one_level_action(context, node):
     state.pop_indent()
     if partial_indent:
         state.start_continuation()
+    return node
+
+def open_bracket_action(context, node):
+    state.nest_bracket()
+    return node
+
+def close_bracket_action(context, node):
+    state.unnest_bracket()
     return node
 
 def unbracketed_continuation_marker_action(context, node):
@@ -434,14 +444,6 @@ def unbracketed_decreased_indent_one_level_in_continuation_action(
     state.pop_indent()
     if partial_indent:
         state.start_continuation()
-    return node
-
-def open_bracket_action(context, node):
-    state.nest_bracket()
-    return node
-
-def close_bracket_action(context, node):
-    state.unnest_bracket()
     return node
 
 actions = {
