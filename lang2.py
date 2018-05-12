@@ -230,6 +230,7 @@ discardable:
     blank_line |
     full_line_comment |
     line_comment |
+    block_comment |
     insignificant_spaces |
     escaped_newline |
     bracketed_new_line |
@@ -241,6 +242,16 @@ discardable:
 blank_line: /\n *(?=\n)/;
 full_line_comment: /\n *\/\/.*(?=\n)/;
 line_comment: /\/\/.*(?=\n)/;
+block_comment:
+    open_block_comment block_comment_content* close_block_comment;
+open_block_comment: "/*";
+block_comment_content:
+    block_comment | 
+    not_open_or_close_block_comment_or_spaces |
+    insignificant_spaces;
+not_open_or_close_block_comment_or_spaces:
+    /((\*[^\/])|[^ *\/]|\/[^\*])+/;
+close_block_comment: "*/";
 insignificant_spaces: / +/;
 escaped_newline: /\\ *\n/;
 
