@@ -137,22 +137,22 @@ if a ...
    b (a)
  else:
    c ()
-#circle ...
-#   a b
-#   c d
-#     color: black
-#     radius: four
-#     outline: true
-#     width: five
-#c
-#if a b c then: {
-#     a1; a3
-#     a2
-# } else: (
-#      )
-#a
-#if (a b) then: {b;c} else: {d; e()}
-#a, b, f b (aa,) a : c d e b: d {e}
+//circle ...
+//   a b
+//   c d
+//     color: black
+//     radius: four
+//     outline: true
+//     width: five
+//c
+//if a b c then: {
+//     a1; a3
+//     a2
+// } else: (
+//      )
+//a
+//if (a b) then: {b;c} else: {d; e()}
+//a, b, f b (aa,) a : c d e b: d {e}
 """
 #a d: z1 e: z3
 #f2 (b k1: a k2: b c)
@@ -227,10 +227,10 @@ chained_call:
 LAYOUT:
     discardable+ | EMPTY;
 discardable:
-    hash_comment |
-    hash_comment_line |
     blank_line |
-    insignficant_spaces |
+    full_line_comment |
+    line_comment |
+    insignificant_spaces |
     escaped_newline |
     bracketed_new_line |
     unbracketed_continuation_marker |
@@ -238,10 +238,10 @@ discardable:
     unbracketed_aligned_indent_in_continuation |
     unbracketed_decreased_indent_one_level_in_continuation;
     // unbracketed_partially_decreased_indent
-hash_comment: / *#.*(?=\n)/;
-hash_comment_line: /\n *#.*(?=\n)/;
 blank_line: /\n *(?=\n)/;
-insignficant_spaces: / +/;
+full_line_comment: /\n *\/\/.*(?=\n)/;
+line_comment: /\/\/.*(?=\n)/;
+insignificant_spaces: / +/;
 escaped_newline: /\\ *\n/;
 
 // custom recognizers for discardable elements
