@@ -18,7 +18,9 @@ class Identifier:
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}{}".format(indent_token*first_indent, self._string))
+        print("{}Identifier".format(indent_token*first_indent))
+        print("{}text: {}".format(
+            indent_token*(indent+1), self._string))
 
 class Named_Expression:
     def __init__(self, name, expression, context=None):
@@ -34,7 +36,7 @@ class Named_Expression:
         first_indent = indent if first_indent is None else first_indent
         print("{}Named_Expression".format(indent_token*first_indent))
         print("{}name: ".format(indent_token*(indent+1)), end="")
-        self._name.print(first_indent=0)
+        self._name.print(indent+1, first_indent=0)
         print("{}expression: ".format(indent_token*(indent+1)), end="")
         self._expression.print(indent+1, first_indent=0)
 
@@ -169,7 +171,6 @@ primary_delimiters:
 primary_delimiter:
     unbracketed_aligned_indent |
     ";";
-unbracketed_aligned_indent:; // custom recognizer
 expression:
     comma_delimited_sequence |
     non_sequence;
@@ -177,13 +178,11 @@ comma_delimited_sequence:
     non_sequence comma comma_delimited_sequence |
     non_sequence comma non_sequence |
     non_sequence comma;
-comma: ",";
 non_sequence:
     named_expression |
     anonymous_expression;
 named_expression:
     key anonymous_expression;
-key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
 anonymous_expression:
     term |
     call;
@@ -195,21 +194,14 @@ term:
     identifier;
 parenthesized_expression:
     open_parenthesis expression close_parenthesis;
-open_parenthesis: "(";
-close_parenthesis: ")";
 empty_parentheses:
     open_parenthesis close_parenthesis;
 braced_block:
     open_brace expressions close_brace;
-open_brace: "{";
-close_brace: "}";
 unbracketed_indented_block:
     unbracketed_increased_indent
     expressions
     unbracketed_decreased_indent_one_level;
-unbracketed_increased_indent:; // custom recognizer
-unbracketed_decreased_indent_one_level:; // custom recognizer
-identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
 call:
     callee named_argument+ |
     callee argument named_argument*;
@@ -238,6 +230,20 @@ discardable:
     unbracketed_aligned_indent_in_continuation |
     unbracketed_decreased_indent_one_level_in_continuation;
     // unbracketed_partially_decreased_indent
+
+terminals
+
+unbracketed_aligned_indent:; // custom recognizer
+comma: ",";
+key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
+open_parenthesis: "(";
+close_parenthesis: ")";
+open_brace: "{";
+close_brace: "}";
+unbracketed_increased_indent:; // custom recognizer
+unbracketed_decreased_indent_one_level:; // custom recognizer
+identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
+
 blank_line: /\n *(?=\n)/;
 full_line_comment: /\n *\/\/.*(?=\n)/;
 line_comment: /\/\/.*(?=\n)/;
