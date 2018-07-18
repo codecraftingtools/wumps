@@ -1,4 +1,4 @@
-indent_token = "  "
+_indent_token = "  "
 
 class Identifier:
     def __init__(self, id_string, context=None):
@@ -13,9 +13,9 @@ class Identifier:
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}Identifier".format(indent_token*first_indent))
+        print("{}Identifier".format(_indent_token*first_indent))
         print("{}text: {}".format(
-            indent_token*(indent+1), self._string))
+            _indent_token*(indent+1), self._string))
 
 class Named_Expression:
     def __init__(self, name, expression, context=None):
@@ -29,10 +29,10 @@ class Named_Expression:
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}Named_Expression".format(indent_token*first_indent))
-        print("{}name: ".format(indent_token*(indent+1)), end="")
+        print("{}Named_Expression".format(_indent_token*first_indent))
+        print("{}name: ".format(_indent_token*(indent+1)), end="")
         self._name.print(indent+1, first_indent=0)
-        print("{}expression: ".format(indent_token*(indent+1)), end="")
+        print("{}expression: ".format(_indent_token*(indent+1)), end="")
         self._expression.print(indent+1, first_indent=0)
 
 class Call:
@@ -58,12 +58,12 @@ class Call:
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}Call".format(indent_token*first_indent))
+        print("{}Call".format(_indent_token*first_indent))
         print("{}callee: ".format(
-            indent_token*(indent+1)), end="")
+            _indent_token*(indent+1)), end="")
         self._callee.print(indent=indent+1, first_indent=0)
         print("{}arguments:".format(
-            indent_token*(indent+1)))
+            _indent_token*(indent+1)))
         for a in self._arguments:
             try:
                 a.print(indent=indent+2)
@@ -87,11 +87,11 @@ class Expressions:
 
     def print(self, indent=0, first_indent=None):
         first_indent = indent if first_indent is None else first_indent
-        print("{}{}".format(indent_token*first_indent,
+        print("{}{}".format(_indent_token*first_indent,
                             self.__class__.__name__))
         self._print_attributes(indent)
         print("{}expressions:".format(
-            indent_token*(indent+1)))
+            _indent_token*(indent+1)))
         for a in self._expressions:
             try:
                 a.print(indent=indent+2)
@@ -111,7 +111,7 @@ class File(Expressions):
         return cls(nodes[0]._expressions, context=context)
 
     def _print_attributes(self, indent):
-        print("{}path: {}".format(indent_token*(indent+1), self._path))
+        print("{}path: {}".format(_indent_token*(indent+1), self._path))
 
 class Sequence(Expressions):
     @classmethod
