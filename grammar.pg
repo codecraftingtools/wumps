@@ -83,8 +83,8 @@ unbracketed_decreased_indent_one_level:; // custom recognizer
 identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
 
 blank_line: /\n *(?=\n)/;
-full_line_comment: /\n *\/\/.*(?=\n)/;
-line_comment: /\/\/.*(?=\n)/;
+full_line_comment: /\n *--.*(?=\n)/;
+line_comment: /--.*(?=\n)/;
 insignificant_spaces: / +/;
 escaped_newline: /\\ *\n/;
 
