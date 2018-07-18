@@ -1,0 +1,96 @@
+file:
+    expressions
+    EOF;
+expressions:
+    primary_delimiters? expression+[primary_delimiters] primary_delimiters? |
+    primary_delimiters?;
+primary_delimiters:
+    primary_delimiter+;
+primary_delimiter:
+    unbracketed_aligned_indent |
+    ";";
+expression:
+    comma_delimited_sequence |
+    non_sequence;
+comma_delimited_sequence:
+    non_sequence comma comma_delimited_sequence |
+    non_sequence comma non_sequence |
+    non_sequence comma;
+non_sequence:
+    named_expression |
+    anonymous_expression;
+named_expression:
+    key anonymous_expression;
+anonymous_expression:
+    term |
+    call;
+term:
+    parenthesized_expression |
+    empty_parentheses |
+    braced_block |
+    unbracketed_indented_block |
+    identifier;
+parenthesized_expression:
+    open_parenthesis expression close_parenthesis;
+empty_parentheses:
+    open_parenthesis close_parenthesis;
+braced_block:
+    open_brace expressions close_brace;
+unbracketed_indented_block:
+    unbracketed_increased_indent
+    expressions
+    unbracketed_decreased_indent_one_level;
+call:
+    callee named_argument+ |
+    callee argument named_argument*;
+callee:
+    identifier |
+    parenthesized_expression;
+named_argument:
+    key argument;
+argument:
+    term |
+    chained_call;
+chained_call:
+    callee argument;
+
+LAYOUT:
+    discardable+ | EMPTY;
+discardable:
+    blank_line |
+    full_line_comment |
+    line_comment |
+    insignificant_spaces |
+    escaped_newline |
+    bracketed_new_line |
+    unbracketed_continuation_marker |
+    unbracketed_increased_indent_after_continuation_marker |
+    unbracketed_aligned_indent_in_continuation |
+    unbracketed_decreased_indent_one_level_in_continuation;
+    // unbracketed_partially_decreased_indent
+
+terminals
+
+unbracketed_aligned_indent:; // custom recognizer
+comma: ",";
+key: /[a-zA-Z_]+[a-zA-Z0-9_]* *:/;
+open_parenthesis: "(";
+close_parenthesis: ")";
+open_brace: "{";
+close_brace: "}";
+unbracketed_increased_indent:; // custom recognizer
+unbracketed_decreased_indent_one_level:; // custom recognizer
+identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
+
+blank_line: /\n *(?=\n)/;
+full_line_comment: /\n *\/\/.*(?=\n)/;
+line_comment: /\/\/.*(?=\n)/;
+insignificant_spaces: / +/;
+escaped_newline: /\\ *\n/;
+
+// custom recognizers for discardable elements
+bracketed_new_line:;
+unbracketed_continuation_marker:;
+unbracketed_increased_indent_after_continuation_marker:;
+unbracketed_decreased_indent_one_level_in_continuation:;
+unbracketed_aligned_indent_in_continuation:;
