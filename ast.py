@@ -1,21 +1,21 @@
 _indent_token = "  "
 
 class Identifier:
-    def __init__(self, id_string, context=None):
+    def __init__(self, text, context=None):
         self._context = context
-        if id_string.endswith(':'):
-            id_string = id_string[:-1].rstrip()
-        self._string = id_string
+        if text.endswith(':'):
+            text = text[:-1].rstrip()
+        self._text = text
 
     @classmethod
     def create_from_node(cls, context, node):
         return cls(node, context=context)
 
-    def print(self, indent=0, first_indent=None):
-        first_indent = indent if first_indent is None else first_indent
-        print("{}Identifier".format(_indent_token*first_indent))
-        print("{}text: {}".format(
-            _indent_token*(indent+1), self._string))
+    def tree_str(self, depth=0, first_depth=None):
+        first_depth = depth if first_depth is None else first_depth
+        s = "{}Identifier\n".format(_indent_token*first_depth)
+        s += "{}text: {}\n".format(_indent_token*(depth+1), self._text)
+        return s
 
 class Named_Expression:
     def __init__(self, name, expression, context=None):
@@ -27,13 +27,14 @@ class Named_Expression:
     def create_from_nodes(cls, context, nodes):
         return cls(nodes[0], nodes[1], context=context)
 
-    def print(self, indent=0, first_indent=None):
-        first_indent = indent if first_indent is None else first_indent
-        print("{}Named_Expression".format(_indent_token*first_indent))
-        print("{}name: ".format(_indent_token*(indent+1)), end="")
-        self._name.print(indent+1, first_indent=0)
-        print("{}expression: ".format(_indent_token*(indent+1)), end="")
-        self._expression.print(indent+1, first_indent=0)
+    def tree_str(self, depth=0, first_depth=None):
+        first_depth = depth if first_depth is None else first_depth
+        s = "{}Named_Expression\n".format(_indent_token*first_depth)
+        s += "{}name: ".format(_indent_token*(depth+1))
+        s += self._name.tree_str(depth+1, first_depth=0)
+        s += "{}expression: ".format(_indent_token*(depth+1))
+        s += self._expression.tree_str(depth+1, first_depth=0)
+        return s
 
 class Call:
     def __init__(self, callee, arguments, context=None):
@@ -56,19 +57,18 @@ class Call:
             arguments.extend(nodes[2])
         return cls(callee, arguments, context=context)
 
-    def print(self, indent=0, first_indent=None):
-        first_indent = indent if first_indent is None else first_indent
-        print("{}Call".format(_indent_token*first_indent))
-        print("{}callee: ".format(
-            _indent_token*(indent+1)), end="")
-        self._callee.print(indent=indent+1, first_indent=0)
-        print("{}arguments:".format(
-            _indent_token*(indent+1)))
+    def tree_str(self, depth=0, first_depth=None):
+        first_depth = depth if first_depth is None else first_depth
+        s = "{}Call\n".format(_indent_token*first_depth)
+        s += "{}callee: ".format(_indent_token*(depth+1))
+        s += self._callee.tree_str(depth=depth+1, first_depth=0)
+        s += "{}arguments:\n".format(_indent_token*(depth+1))
         for a in self._arguments:
             try:
-                a.print(indent=indent+2)
+                s += a.tree_str(depth=depth+2)
             except:
-                print(a)
+                s += a
+        return s
 
 class Expressions:
     def __init__(self, expressions=[], context=None):
@@ -82,21 +82,20 @@ class Expressions:
             expressions.extend(nodes[1])
         return cls(expressions, context=context)
 
-    def _print_attributes(self, indent):
-        pass
+    def _tree_str_attributes(self, depth):
+        return ""
 
-    def print(self, indent=0, first_indent=None):
-        first_indent = indent if first_indent is None else first_indent
-        print("{}{}".format(_indent_token*first_indent,
-                            self.__class__.__name__))
-        self._print_attributes(indent)
-        print("{}expressions:".format(
-            _indent_token*(indent+1)))
+    def tree_str(self, depth=0, first_depth=None):
+        first_depth = depth if first_depth is None else first_depth
+        s = "{}{}\n".format(_indent_token*first_depth, self.__class__.__name__)
+        s += self._tree_str_attributes(depth)
+        s += "{}expressions:\n".format(_indent_token*(depth+1))
         for a in self._expressions:
             try:
-                a.print(indent=indent+2)
+                s += a.tree_str(depth=depth+2)
             except:
-                print(a)
+                s += a
+        return s
 
 class File(Expressions):
     def __init__(self, expressions, context=None):
@@ -110,8 +109,8 @@ class File(Expressions):
     def create_from_nodes(cls, context, nodes):
         return cls(nodes[0]._expressions, context=context)
 
-    def _print_attributes(self, indent):
-        print("{}path: {}".format(_indent_token*(indent+1), self._path))
+    def _tree_str_attributes(self, depth):
+        return "{}path: {}\n".format(_indent_token*(depth+1), self._path)
 
 class Sequence(Expressions):
     @classmethod
