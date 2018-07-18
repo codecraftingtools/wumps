@@ -1,3 +1,5 @@
+-- Example input file for testing the grammar parser
+
 if a ...
   then:
    b (a)

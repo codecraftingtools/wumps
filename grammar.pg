@@ -1,3 +1,5 @@
+// Formal grammar definition
+
 file:
     expressions
     EOF;

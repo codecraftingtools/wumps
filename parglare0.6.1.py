@@ -1,3 +1,6 @@
+# This file contains the original parts of parglare that were modified
+# in parglare_mod.py (for comparision purposes).
+
 class Parser(object):
     def _token_recognition(self, input_str, position, actions, finish_flags):
         tokens = []

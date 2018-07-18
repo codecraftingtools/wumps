@@ -1,3 +1,5 @@
+# Utility routines used in multiple source files
+
 import re
 
 new_line_and_possible_indent_re = re.compile(r"\n *")

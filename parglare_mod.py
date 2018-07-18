@@ -1,3 +1,5 @@
+# This file contains the required modifications to parglare.
+
 from parglare import *
 
 class Parser_Overrides:
@@ -9,6 +11,8 @@ class Parser_Overrides:
                 break
             last_prior = symbol.prior
             tok = symbol.recognizer(input_str, position)
+            # Empty string matches are required for handling
+            # significant whitespace.
             if tok is not None:
                 tokens.append(Token(symbol, tok))
                 if finish_flags[idx]:

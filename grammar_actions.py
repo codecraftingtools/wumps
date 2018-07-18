@@ -1,10 +1,12 @@
+# Actions to be taken when grammar patterns are recognized
+
 from parglare import get_collector
 from context import state
 from util import match_new_line_and_possible_indent
 
 action = get_collector()
 
-# parsing side-effects
+# Parsing side-effects
 
 @action
 def open_bracket(context, node):

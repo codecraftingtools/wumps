@@ -1,3 +1,5 @@
+# Extra context required for parsing significant whitespace
+
 class Extra_State:
     def __init__(self):
         self._indent_stack = [["", False, " "*999]]

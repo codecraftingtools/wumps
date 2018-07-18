@@ -1,3 +1,5 @@
+# Custom recognizers for grammar terminals
+
 import re
 from parglare import get_collector
 from context import state
