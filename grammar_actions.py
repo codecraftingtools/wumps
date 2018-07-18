@@ -64,7 +64,7 @@ def unbracketed_decreased_indent_one_level_in_continuation(context, node):
 import ast
 
 action('file')                      (ast.File.create_from_nodes)
-action('expressions')               (ast.Expressions.create_from_nodes)
+action('expressions')               (ast.Elements.create_from_nodes)
 action('comma_delimited_sequence')  (ast.Sequence.
                                          create_from_comma_separated_nodes)
 action('named_expression')          (ast.Named_Expression.create_from_nodes)
