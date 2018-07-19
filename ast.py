@@ -22,6 +22,8 @@ class Identifier(Node):
         # grammar is defined and needs to be removed.
         if text.endswith(':'):
             text = text[:-1].rstrip()
+        if text.startswith("'"):
+            text = text[1:-1].replace("\\'","'")
         self.text = text
 
     @classmethod
@@ -29,7 +31,59 @@ class Identifier(Node):
         return cls(node, context=context)
 
     def _get_attribute_ast_strs(self, depth):
-        return '{}text: "{}"\n'.format(_indent_token*(depth+1), self.text)
+        return '{}text: "{}"\n'.format(
+            _indent_token*(depth+1), self.text.replace('"','\\"'))
+
+class String(Node):
+    def __init__(self, text, context=None):
+        super().__init__(context=context)
+        self.text = text
+
+    @classmethod
+    def create_from_node(cls, context, node):
+        return cls(node[1:-1].replace('\\"','"'), context=context)
+
+    def _get_attribute_ast_strs(self, depth):
+        return '{}text: "{}"\n'.format(
+            _indent_token*(depth+1), self.text.replace('"','\\"'))
+
+class Integer(Node):
+    def __init__(self, value, context=None):
+        super().__init__(context=context)
+        self.value = value
+
+    @classmethod
+    def create_from_node(cls, context, node):
+        node = node.lower()
+        base = 10
+        if (node.startswith( "0x") or 
+            node.startswith("-0x") or
+            node.startswith("+0x")):
+            base = 16
+        elif (node.startswith( "0b") or 
+              node.startswith("-0b") or
+              node.startswith("+0b")):
+            base = 2
+        elif (node.startswith( "0o") or 
+              node.startswith("-0o") or
+              node.startswith("+0o")):
+            base = 8
+        return cls(int(node.replace("_",""), base=base), context=context)
+
+    def _get_attribute_ast_strs(self, depth):
+        return "{}value: {}\n".format(_indent_token*(depth+1), self.value)
+
+class Float(Node):
+    def __init__(self, value, context=None):
+        super().__init__(context=context)
+        self.value = value
+
+    @classmethod
+    def create_from_node(cls, context, node):
+        return cls(float(node.replace("_","")), context=context)
+
+    def _get_attribute_ast_strs(self, depth):
+        return "{}value: {}\n".format(_indent_token*(depth+1), self.value)
 
 class Named_Expression(Node):
     def __init__(self, name, expression, context=None):

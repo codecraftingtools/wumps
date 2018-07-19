@@ -73,10 +73,17 @@ action('named_expression')          (ast.Named_Expression.create_from_nodes)
 action('key')                       (ast.Identifier.create_from_node)
 action('braced_block')              (ast.Sequence.create_from_block_nodes)
 action('unbracketed_indented_block')(ast.Sequence.create_from_block_nodes)
-action('identifier')                (ast.Identifier.create_from_node)
+action('simple_identifier')         (ast.Identifier.create_from_node)
+action('complex_identifier')        (ast.Identifier.create_from_node)
 action('call')                      (ast.Call.create_from_nodes)
 action('named_argument')            (ast.Named_Expression.create_from_nodes)
 action('chained_call')              (ast.Call.create_from_nodes)
+action('string')                    (ast.String.create_from_node)
+action('decimal_integer')           (ast.Integer.create_from_node)
+action('hexadecimal_integer')       (ast.Integer.create_from_node)
+action('binary_integer')            (ast.Integer.create_from_node)
+action('octal_integer')             (ast.Integer.create_from_node)
+action('float')                     (ast.Float.create_from_node)
 
 @action
 def parenthesized_expression(context, nodes):
