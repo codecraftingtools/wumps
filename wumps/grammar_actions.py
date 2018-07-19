@@ -10,15 +10,17 @@ action = get_collector()
 
 # Parsing side-effects
 
-@action
 def open_bracket(context, node):
     state.nest_bracket()
     return node
+action('open_brace')(open_bracket)
+action('open_parenthesis')(open_bracket)
 
-@action
 def close_bracket(context, node):
     state.unnest_bracket()
     return node
+action('close_brace')(close_bracket)
+action('close_parenthesis')(close_bracket)
 
 @action
 def unbracketed_increased_indent(context, node):
