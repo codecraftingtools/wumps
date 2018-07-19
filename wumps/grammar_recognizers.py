@@ -1,9 +1,11 @@
-# Custom recognizers for grammar terminals
+"""
+Custom recognizers for grammar terminals.
+"""
 
 import re
 from parglare import get_collector
-from context import state
-from util import match_new_line_and_possible_indent
+from wumps.context import state
+from wumps.util import match_new_line_and_possible_indent
 
 recognizer = get_collector()
 

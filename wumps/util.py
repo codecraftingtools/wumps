@@ -1,4 +1,6 @@
-# Utility routines used in multiple source files
+"""
+Utility routines used in multiple source files.
+"""
 
 import re
 

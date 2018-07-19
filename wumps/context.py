@@ -1,4 +1,6 @@
-# Extra context required for parsing significant whitespace
+"""
+Extra context required for parsing significant whitespace.
+"""
 
 class Extra_State:
     def __init__(self):

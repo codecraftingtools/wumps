@@ -1,8 +1,10 @@
-# Actions to be taken when grammar patterns are recognized
+"""
+Actions to be taken when grammar patterns are recognized.
+"""
 
 from parglare import get_collector
-from context import state
-from util import match_new_line_and_possible_indent
+from wumps.context import state
+from wumps.util import match_new_line_and_possible_indent
 
 action = get_collector()
 
@@ -63,7 +65,7 @@ def unbracketed_decreased_indent_one_level_in_continuation(context, node):
     return node
 
 # AST construction actions
-import ast
+from wumps import ast
 
 action('file')                      (ast.File.create_from_nodes)
 action('expressions')               (ast.Elements.create_from_nodes)

@@ -1,7 +1,10 @@
-# This file contains the original parts of parglare that were modified
-# in parglare_mod.py (for comparision purposes).
+"""
+Required modifications to parglare.
+"""
 
-class Parser(object):
+from parglare import *
+
+class Parser_Overrides:
     def _token_recognition(self, input_str, position, actions, finish_flags):
         tokens = []
         last_prior = -1
@@ -10,8 +13,13 @@ class Parser(object):
                 break
             last_prior = symbol.prior
             tok = symbol.recognizer(input_str, position)
-            if tok:
+            # Empty string matches are required for handling
+            # significant whitespace.
+            if tok is not None:
                 tokens.append(Token(symbol, tok))
                 if finish_flags[idx]:
                     break
         return tokens
+
+Parser._token_recognition = Parser_Overrides._token_recognition
+GLRParser._token_recognition = Parser_Overrides._token_recognition

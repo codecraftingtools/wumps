@@ -1,0 +1,20 @@
+-- Example input file for testing the grammar parser (numbers)
+
+numeric_literals:
+  243
+  +17
+  -21
+  -123.
+  +23.0
+  .42
+  1e4
+  -.5E-2
+  -100_000
+  +15_000.000_001e2
+  1.e-2
+  0x123
+  -0B1111
+  -0X123
+  +0b1111
+  0o10
+  -0O10 -- please don't use this

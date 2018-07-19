@@ -1,4 +1,6 @@
-# Abstract syntax tree nodes
+"""
+Abstract syntax tree nodes.
+"""
 
 _indent_token = "  "
 
@@ -18,21 +20,26 @@ class Node:
 class Identifier(Node):
     def __init__(self, text, context=None):
         super().__init__(context=context)
-        # The trailing colon for keys is an artifact of the way the
-        # grammar is defined and needs to be removed.
-        if text.endswith(':'):
-            text = text[:-1].rstrip()
-        if text.startswith("'"):
-            text = text[1:-1].replace("\\'","'")
         self.text = text
 
     @classmethod
     def create_from_node(cls, context, node):
+        # The trailing colon for keys is an artifact of the way the
+        # grammar is defined and needs to be removed.
+        if node.endswith(':'):
+            node = node[:-1].rstrip()
+
+        # Complex identifiers need special handling.
+        if node.startswith("'"):
+            # Strip quotes and remove escape sequences.
+            node = node[1:-1].replace("\\'","'")
+
         return cls(node, context=context)
 
     def _get_attribute_ast_strs(self, depth):
+        escaped_text = self.text.replace('"','\\"')
         return '{}text: "{}"\n'.format(
-            _indent_token*(depth+1), self.text.replace('"','\\"'))
+            _indent_token*(depth+1), escaped_text)
 
 class String(Node):
     def __init__(self, text, context=None):
@@ -41,11 +48,14 @@ class String(Node):
 
     @classmethod
     def create_from_node(cls, context, node):
-        return cls(node[1:-1].replace('\\"','"'), context=context)
+        # Strip quotes and remove escape sequences.
+        unescaped_text = node[1:-1].replace('\\"','"')
+        return cls(unescaped_text, context=context)
 
     def _get_attribute_ast_strs(self, depth):
+        escaped_text = self.text.replace('"','\\"')
         return '{}text: "{}"\n'.format(
-            _indent_token*(depth+1), self.text.replace('"','\\"'))
+            _indent_token*(depth+1), escaped_text)
 
 class Integer(Node):
     def __init__(self, value, context=None):

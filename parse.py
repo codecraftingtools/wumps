@@ -1,15 +1,26 @@
 #!/usr/bin/env python3
 
-# Parse input files and print the AST
+"""
+Parse input files and print the AST.
+"""
+
+# Add the project root directory to sys.path
+import sys
+from pathlib import Path
+wumps_root = Path(sys.path[0])
+sys.path.insert(1, str(wumps_root))
 
 import argparse
-from parglare_mod import Parser, GLRParser, Grammar
+
+# A slight modification to parglare is currently required
+from wumps.parglare_mod import Parser, GLRParser, Grammar
 
 arg_parser = argparse.ArgumentParser(
     description="Parse an input file and print the AST.")
 arg_parser.add_argument(
-    "filename",
-    help = "name of the input file to parse")
+    "filenames",
+    nargs = "+",
+    help = "names of the input files to parse")
 arg_parser.add_argument(
     "--glr",
     action = "store_true",
@@ -26,29 +37,34 @@ arg_parser.add_argument(
 )
 args = arg_parser.parse_args()
 
+grammar_file = str(wumps_root / "wumps" / "grammar.pg")
+grammar = Grammar.from_file(grammar_file)
+
 if args.glr:
     parser_type = GLRParser
 else:
     parser_type = Parser
-
-grammar = Grammar.from_file("grammar.pg")
 parser = parser_type(
     grammar, debug=args.debug_parser, build_tree=args.build_tree,
     call_actions_during_tree_build=True)
-results = parser.parse_file(args.filename)
 
-# The GLR parser returns a list of parse trees, but the standard
-# parser returns a single parse tree.
-if not isinstance(results, list):
-    results = [results]
-n_results = len(results)
+# Process each file specified on the command line.
+for file_name in args.filenames:
 
-for i, tree in enumerate(results):
-    maybe_glr = "GLR " if isinstance(parser, GLRParser) else ""
-    maybe_tree_number = " #{}".format(i+1) if n_results > 1 else ""
-    print('--- {}Parse Tree{} for "{}" ---'.format(
-        maybe_glr, maybe_tree_number, args.filename))
-    if args.build_tree:
-        print(tree.tree_str(), end="")
-    else:
-        print(tree.get_ast_str(), end="")
+    results = parser.parse_file(file_name)
+     
+    # The GLR parser returns a list of parse trees, but the standard
+    # parser returns a single parse tree.  This makes things consistent.
+    if not isinstance(results, list):
+        results = [results]
+    n_results = len(results)
+     
+    for i, tree in enumerate(results):
+        maybe_glr = "GLR " if isinstance(parser, GLRParser) else ""
+        maybe_tree_number = " #{}".format(i+1) if n_results > 1 else ""
+        print('--- {}Parse Tree{} for "{}" ---'.format(
+            maybe_glr, maybe_tree_number, file_name))
+        if args.build_tree:
+            print(tree.tree_str(), end="")
+        else:
+            print(tree.get_ast_str(), end="")
