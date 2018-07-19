@@ -1,4 +1,4 @@
--- Example input file for testing the grammar parser (strings)
+-- Example input file for testing the grammar parser (strings).
 
 -- strings
 "str 123", "str1 ' \" 123"

@@ -1,4 +1,4 @@
--- Example input file for testing the grammar parser (numbers)
+-- Example input file for testing the grammar parser (numbers).
 
 numeric_literals:
   243

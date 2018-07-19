@@ -1,0 +1,180 @@
+-- Example input file for testing the grammar parser (introduction).
+
+-- This is a comment.
+
+-- Blank lines are also ignored.
+
+-- This is a simple expression containing only a single identifier.
+expr_1A
+
+-- Complex identifiers with unusual characters can be formed using
+-- single quotes.
+'Wierd + ID?'
+
+-- Top-level expressions are separated by new lines or semicolons.
+expr2
+expr3a; expr3b
+
+-- Indentation is significant, so each line should be indented the same amount.
+-- The above code is not the same as what you see below.  Don't worry about
+-- what the code below means -- we will address that later.
+expr2
+  expr3a; expr3b
+
+-- Sequence elements are separated by commas.
+e1, e2, e3 -- This is a trailing line comment.
+
+-- Expressions can span multiple lines by escaping the newline character
+-- with a backslash.  Indentation of the continued line is insignificant.
+line1, line1, \
+  line2, \
+line3
+
+-- Another way to span multiple lines is by placing a continuation
+-- marker at the end of the first line.  In this case, the
+-- continuation line(s) must be indented.  If more than one line
+-- continuation line is required, the subsequent continuation lines
+-- must be aligned with the first continuation line, but no more
+-- continuation markers are required.
+line1, line1, ...
+  line2,
+  line3
+
+-- Expressions can be named like this.
+name4: e4
+
+-- Naming has a higher precedence than sequence construction.
+name5: e5a, e5b
+
+-- Parentheses can be used for controlling precedence.
+name6: (e6a, e6b)
+
+-- Empty parentheses can also be used to construct an empty sequence.
+()
+
+-- Note that inside parentheses, new lines and alignment are ignored.
+(
+ i1,
+     i2,
+   i3, i4)
+
+-- Calls with a single argument can be written like this.
+f1 arg1
+
+-- Calls can be chained.
+f1 f2 f3 argf3
+
+-- Multiple arguments can be passed as a sequence.
+f4(arg1, arg2, arg3)
+
+-- A call with no arguments can be made by using an empty sequence as
+-- an argument.
+f_empty()
+
+-- Multiple argument calls can also nest.
+f4a(f4b arg4b, arg2, fa4c(arg4c))
+
+-- Named expressions can be used to form keyword arguments
+f5(pos1, pos2, key1: value1, key2: value2)
+
+-- The positional arguments are not required to be first.
+f6(key1: value1, pos1, key2: value2, pos2, pos3)
+
+-- Although multiple positional arguments cannot be passed to a
+-- function without using parentheses, additonal keyword arguments can
+-- be tacked on the end of a function call.
+f7 key1: value1 key2: value2
+
+-- The above expression is equivalent to this.
+f7(key1: value1, key2: value2)
+
+-- One positional argument and many keyword arguments can be called without
+-- using parentheses.
+f8 pos1 key1: value1 key2: value2
+
+-- Trying to pass any more would result in nesting.
+f9 pos1 notpos2 key1: value1 key2: value2
+
+-- The above expression is equivalent to this.
+f9(pos1(notpos2), key1: value1, key2: value2)
+
+-- The key is to remember that keywords go with the outermost call.
+fa fb c key1: innerfa arg_innerfa key2: value2
+
+-- The above expression is equivalent to this:
+fa(fb(c), key1: innerfa(arg_innerfa), key2: value2)
+
+-- Some of the expressions above are not easy to understand, so don't write
+-- things like that just because you can.  Hang in there and you will hopefully
+-- see the reason very soon.
+
+-- Whitespace is significant like in YAML or Python.
+
+-- Indentation can be used to create a sequence.  An increase in
+-- indentation begins a sequence of newline-separated expressions, and
+-- a decrease in indentation ends the sequence.
+fn1
+  arg1
+  arg2
+
+-- The above is equivalent to this.
+fn1(arg1, arg2)
+
+-- Nesting works.
+fn2
+  fn2a
+    arg2a
+  arg2
+  key1: value1
+
+-- The above expression is equivalent to this.
+fn2(fn2a(arg2a), arg2, key1: value1)
+
+-- This allows us to build flow-control constructs using a function call syntax
+-- without any language keywords.
+if greater(arg1, arg2) ...
+  then:
+    do_this(arg1)
+    do_that(arg2)
+  else:
+    do_the_other()
+
+-- A "partial unindent" is seen as an implicit continuation, allowing things
+-- like this.
+if done then:
+    finish()
+  else:
+    keep_going()
+
+-- For some constructs, named arguments might be repeated.
+case value ...
+  of: A then:
+    do_1a()
+    do_1b()
+  of: B then:
+    do_2()
+
+-- Another way to create a sequence is to use braces.  Inside the
+-- braces, expressions are separated by semicolons, but new lines and
+-- indentation are ignored.
+if (done) then: {
+    do_thing1() } else: {do_other1(); 
+  do_other2()}
+
+-- We have just been using literals so far, but native types like integers,
+-- floats, and strings are also supported.
+0xff, 0x10, 10_000, +2.3e3, -0.000_001, "string"
+
+-- The syntax is good for declarative uses as well.
+Drawing
+  Circle
+    radius: 5.0
+    color: "green"
+    x: 10
+    y: 10
+  Rectangle
+    width: 20
+    height: 20
+    color: 0xff0000
+    x: 100
+    y: 100
