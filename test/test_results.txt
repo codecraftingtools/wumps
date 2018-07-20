@@ -5,7 +5,7 @@ File
     Identifier
       text: "expr_1A"
     Identifier
-      text: "Wierd + ID?"
+      text: "Weird + ID?"
     Identifier
       text: "expr2"
     Identifier
