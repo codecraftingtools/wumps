@@ -22,9 +22,12 @@ format of the grammar file.
 Running the Parser
 ------------------
 
-If you want to try running the parser yourself, first `install
-parglare`_.  Version 0.6.1 is known to work.  Next, clone the
-``wumps`` git repository:
+Wumps is written for Python 3.  If you want to try running the parser
+yourself, first `install parglare`_.  Version 0.6.1 is known to work.
+I had to use ``pip3`` instead of ``pip`` when following the
+``parglare`` installation instructions.
+
+Next, clone the ``wumps`` git repository:
 
 ::
 
