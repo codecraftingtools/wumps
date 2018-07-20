@@ -9,7 +9,7 @@ expr_1A
 
 -- Complex identifiers with unusual characters can be formed using
 -- single quotes.
-'Wierd + ID?'
+'Weird + ID?'
 
 -- Top-level expressions are separated by new lines or semicolons.
 expr2
