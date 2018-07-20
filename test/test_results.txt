@@ -1,0 +1,661 @@
+--- Parse Tree for "test/test_intro.wumps" ---
+File
+  path: "test/test_intro.wumps"
+  elements:
+    Identifier
+      text: "expr_1A"
+    Identifier
+      text: "Wierd + ID?"
+    Identifier
+      text: "expr2"
+    Identifier
+      text: "expr3a"
+    Identifier
+      text: "expr3b"
+    Call
+      callee: Identifier
+        text: "expr2"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "expr3a"
+          Identifier
+            text: "expr3b"
+    Sequence
+      elements:
+        Identifier
+          text: "e1"
+        Identifier
+          text: "e2"
+        Identifier
+          text: "e3"
+    Sequence
+      elements:
+        Identifier
+          text: "line1"
+        Identifier
+          text: "line1"
+        Identifier
+          text: "line2"
+        Identifier
+          text: "line3"
+    Sequence
+      elements:
+        Identifier
+          text: "line1"
+        Identifier
+          text: "line1"
+        Identifier
+          text: "line2"
+        Identifier
+          text: "line3"
+    Named_Expression
+      name: Identifier
+        text: "name4"
+      expression: Identifier
+        text: "e4"
+    Sequence
+      elements:
+        Named_Expression
+          name: Identifier
+            text: "name5"
+          expression: Identifier
+            text: "e5a"
+        Identifier
+          text: "e5b"
+    Named_Expression
+      name: Identifier
+        text: "name6"
+      expression: Sequence
+        elements:
+          Identifier
+            text: "e6a"
+          Identifier
+            text: "e6b"
+    Sequence
+      elements:
+    Sequence
+      elements:
+        Identifier
+          text: "i1"
+        Identifier
+          text: "i2"
+        Identifier
+          text: "i3"
+        Identifier
+          text: "i4"
+    Call
+      callee: Identifier
+        text: "f1"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "arg1"
+    Call
+      callee: Identifier
+        text: "f1"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "f2"
+            arguments: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "f3"
+                  arguments: Sequence
+                    elements:
+                      Identifier
+                        text: "argf3"
+    Call
+      callee: Identifier
+        text: "f4"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "arg1"
+          Identifier
+            text: "arg2"
+          Identifier
+            text: "arg3"
+    Call
+      callee: Identifier
+        text: "f_empty"
+      arguments: Sequence
+        elements:
+    Call
+      callee: Identifier
+        text: "f4a"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "f4b"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "arg4b"
+          Identifier
+            text: "arg2"
+          Call
+            callee: Identifier
+              text: "fa4c"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "arg4c"
+    Call
+      callee: Identifier
+        text: "f5"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "pos1"
+          Identifier
+            text: "pos2"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "f6"
+      arguments: Sequence
+        elements:
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Identifier
+            text: "pos1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+          Identifier
+            text: "pos2"
+          Identifier
+            text: "pos3"
+    Call
+      callee: Identifier
+        text: "f7"
+      arguments: Sequence
+        elements:
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "f7"
+      arguments: Sequence
+        elements:
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "f8"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "pos1"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "f9"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "pos1"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "notpos2"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "f9"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "pos1"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "notpos2"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "fa"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "fb"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "c"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Call
+              callee: Identifier
+                text: "innerfa"
+              arguments: Sequence
+                elements:
+                  Identifier
+                    text: "arg_innerfa"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "fa"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "fb"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "c"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Call
+              callee: Identifier
+                text: "innerfa"
+              arguments: Sequence
+                elements:
+                  Identifier
+                    text: "arg_innerfa"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Identifier
+              text: "value2"
+    Call
+      callee: Identifier
+        text: "fn1"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "arg1"
+          Identifier
+            text: "arg2"
+    Call
+      callee: Identifier
+        text: "fn1"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "arg1"
+          Identifier
+            text: "arg2"
+    Call
+      callee: Identifier
+        text: "fn2"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "fn2a"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "arg2a"
+          Identifier
+            text: "arg2"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+    Call
+      callee: Identifier
+        text: "fn2"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "fn2a"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "arg2a"
+          Identifier
+            text: "arg2"
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value1"
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "greater"
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "arg1"
+                Identifier
+                  text: "arg2"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do_this"
+                  arguments: Sequence
+                    elements:
+                      Identifier
+                        text: "arg1"
+                Call
+                  callee: Identifier
+                    text: "do_that"
+                  arguments: Sequence
+                    elements:
+                      Identifier
+                        text: "arg2"
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do_the_other"
+                  arguments: Sequence
+                    elements:
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "done"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "finish"
+                  arguments: Sequence
+                    elements:
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "keep_going"
+                  arguments: Sequence
+                    elements:
+    Call
+      callee: Identifier
+        text: "case"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "value"
+          Named_Expression
+            name: Identifier
+              text: "of"
+            expression: Identifier
+              text: "A"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do_1a"
+                  arguments: Sequence
+                    elements:
+                Call
+                  callee: Identifier
+                    text: "do_1b"
+                  arguments: Sequence
+                    elements:
+          Named_Expression
+            name: Identifier
+              text: "of"
+            expression: Identifier
+              text: "B"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do_2"
+                  arguments: Sequence
+                    elements:
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "done"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do_thing1"
+                  arguments: Sequence
+                    elements:
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do_other1"
+                  arguments: Sequence
+                    elements:
+                Call
+                  callee: Identifier
+                    text: "do_other2"
+                  arguments: Sequence
+                    elements:
+    Sequence
+      elements:
+        Integer
+          value: 255
+        Integer
+          value: 16
+        Integer
+          value: 10000
+        Float
+          value: 2300.0
+        Float
+          value: -1e-06
+        String
+          text: "string"
+    Call
+      callee: Identifier
+        text: "Drawing"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "Circle"
+            arguments: Sequence
+              elements:
+                Named_Expression
+                  name: Identifier
+                    text: "radius"
+                  expression: Float
+                    value: 5.0
+                Named_Expression
+                  name: Identifier
+                    text: "color"
+                  expression: String
+                    text: "green"
+                Named_Expression
+                  name: Identifier
+                    text: "x"
+                  expression: Integer
+                    value: 10
+                Named_Expression
+                  name: Identifier
+                    text: "y"
+                  expression: Integer
+                    value: 10
+          Call
+            callee: Identifier
+              text: "Rectangle"
+            arguments: Sequence
+              elements:
+                Named_Expression
+                  name: Identifier
+                    text: "width"
+                  expression: Integer
+                    value: 20
+                Named_Expression
+                  name: Identifier
+                    text: "height"
+                  expression: Integer
+                    value: 20
+                Named_Expression
+                  name: Identifier
+                    text: "color"
+                  expression: Integer
+                    value: 16711680
+                Named_Expression
+                  name: Identifier
+                    text: "x"
+                  expression: Integer
+                    value: 100
+                Named_Expression
+                  name: Identifier
+                    text: "y"
+                  expression: Integer
+                    value: 100
+--- Parse Tree for "test/test_numbers.wumps" ---
+File
+  path: "test/test_numbers.wumps"
+  elements:
+    Named_Expression
+      name: Identifier
+        text: "numeric_literals"
+      expression: Sequence
+        elements:
+          Integer
+            value: 243
+          Integer
+            value: 17
+          Integer
+            value: -21
+          Float
+            value: -123.0
+          Float
+            value: 23.0
+          Float
+            value: 0.42
+          Float
+            value: 10000.0
+          Float
+            value: -0.005
+          Integer
+            value: -100000
+          Float
+            value: 1500000.0001
+          Float
+            value: 0.01
+          Integer
+            value: 291
+          Integer
+            value: -15
+          Integer
+            value: -291
+          Integer
+            value: 15
+          Integer
+            value: 8
+          Integer
+            value: -8
+--- Parse Tree for "test/test_strings.wumps" ---
+File
+  path: "test/test_strings.wumps"
+  elements:
+    Sequence
+      elements:
+        String
+          text: "str 123"
+        String
+          text: "str1 ' \" 123"
+    Identifier
+      text: "1 \"complex\" 'identifier'"
