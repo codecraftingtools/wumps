@@ -2,7 +2,14 @@
 Extra context required for parsing significant whitespace.
 """
 
-class Extra_State:
+import parglare.parser
+
+class Context(parglare.parser.Context):
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self.extra = Extra_Context()
+
+class Extra_Context:
     def __init__(self):
         self._indent_stack = [["", False, " "*999]]
         self._starting_continuation = False
@@ -42,5 +49,3 @@ class Extra_State:
             return True
         else:
             return False
-
-state = Extra_State()

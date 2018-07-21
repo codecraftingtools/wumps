@@ -3,7 +3,6 @@ Actions to be taken when grammar patterns are recognized.
 """
 
 from parglare import get_collector
-from wumps.context import state
 from wumps.util import match_new_line_and_possible_indent
 
 action = get_collector()
@@ -11,20 +10,20 @@ action = get_collector()
 # Parsing side-effects
 
 def open_bracket(context, node):
-    state.nest_bracket()
+    context.extra.nest_bracket()
     return node
 action('open_brace')(open_bracket)
 action('open_parenthesis')(open_bracket)
 
 def close_bracket(context, node):
-    state.unnest_bracket()
+    context.extra.unnest_bracket()
     return node
 action('close_brace')(close_bracket)
 action('close_parenthesis')(close_bracket)
 
 @action
 def unbracketed_increased_indent(context, node):
-    state.push_indent(node[1:])
+    context.extra.push_indent(node[1:])
     return node
 
 @action
@@ -34,22 +33,23 @@ def unbracketed_decreased_indent_one_level(context, node):
         context.input_str, context.start_position)
     if new_line_and_possible_indent is not None:
         new_indent = new_line_and_possible_indent[1:]
-        if len(new_indent) > state.previous_indent():
+        if len(new_indent) > context.extra.previous_indent():
             partial_indent = True
-    state.pop_indent()
+    context.extra.pop_indent()
     if partial_indent:
-        state.start_continuation()
+        context.extra.start_continuation()
     return node
 
 @action
 def unbracketed_continuation_marker(context, node):
-    state.start_continuation()
+    context.extra.start_continuation()
     return node
 
 @action
 def unbracketed_increased_indent_after_continuation_marker(context, node):
-    state.push_indent(node[1:])
-    state.set_maximum_continuation_indent(" "*state.current_indent())
+    context.extra.push_indent(node[1:])
+    context.extra.set_maximum_continuation_indent(
+        " "*context.extra.current_indent())
     return node
 
 @action
@@ -59,11 +59,11 @@ def unbracketed_decreased_indent_one_level_in_continuation(context, node):
         context.input_str, context.start_position)
     if new_line_and_possible_indent is not None:
         new_indent = new_line_and_possible_indent[1:]
-        if len(new_indent) > state.previous_indent():
+        if len(new_indent) > context.extra.previous_indent():
             partial_indent = True
-    state.pop_indent()
+    context.extra.pop_indent()
     if partial_indent:
-        state.start_continuation()
+        context.extra.start_continuation()
     return node
 
 # AST construction actions

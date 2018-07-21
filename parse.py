@@ -11,9 +11,8 @@ wumps_root = Path(sys.path[0])
 sys.path.insert(1, str(wumps_root))
 
 import argparse
-
-# A slight modification to parglare is currently required
-from wumps.parglare_mod import Parser, GLRParser, Grammar
+from wumps.context import Context
+from parglare import Parser, GLRParser, Grammar
 
 arg_parser = argparse.ArgumentParser(
     description="Parse an input file and print the AST.")
@@ -51,7 +50,7 @@ parser = parser_type(
 # Process each file specified on the command line.
 for file_name in args.filenames:
 
-    results = parser.parse_file(file_name)
+    results = parser.parse_file(file_name, context=Context())
      
     # The GLR parser returns a list of parse trees, but the standard
     # parser returns a single parse tree.  This makes things consistent.

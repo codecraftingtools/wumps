@@ -22,10 +22,17 @@ format of the grammar file.
 Running the Parser
 ------------------
 
-Wumps is written for Python 3.  If you want to try running the parser
-yourself, first `install parglare`_.  Version 0.6.1 is known to work.
-I had to use ``pip3`` instead of ``pip`` when following the
+The ``wumps`` parser is written in Python 3.  If you want to try
+running the parser yourself, first `install parglare`_.  Right now,
+``wumps`` requires a modified branch of ``parglare``, so please use
+the installation instructions below to install ``parglare``.  Also
+note that I had to use ``pip3`` instead of ``pip`` as specified in
 ``parglare`` installation instructions.
+
+::
+
+  git clone -b recognizer-context https://github.com/codecraftingtools/parglare.git
+  pip install -e parglare
 
 Next, clone the ``wumps`` git repository:
 
@@ -33,7 +40,7 @@ Next, clone the ``wumps`` git repository:
 
   git clone https://github.com/codecraftingtools/wumps.git
 
-The parser can then be run like this:
+The parser can now be run like this:
 
 ::
 
