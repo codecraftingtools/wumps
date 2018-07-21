@@ -659,3 +659,205 @@ File
           text: "str1 ' \" 123"
     Identifier
       text: "1 \"complex\" 'identifier'"
+--- Parse Tree for "test/test_structure.wumps" ---
+File
+  path: "test/test_structure.wumps"
+  elements:
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "a1"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "b1"
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "a2"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "b2"
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "c2"
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "a3"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "b3"
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "c3"
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "a4"
+            arguments: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "b4"
+                  arguments: Sequence
+                    elements:
+                      Call
+                        callee: Identifier
+                          text: "c4"
+                        arguments: Sequence
+                          elements:
+                            Call
+                              callee: Identifier
+                                text: "d4"
+                              arguments: Sequence
+                                elements:
+                                  Call
+                                    callee: Identifier
+                                      text: "e4"
+                                    arguments: Sequence
+                                      elements:
+                                        Call
+                                          callee: Identifier
+                                            text: "f4"
+                                          arguments: Sequence
+                                            elements:
+                                              Call
+                                                callee: Identifier
+                                                  text: "g4"
+                                                arguments: Sequence
+                                                  elements:
+                                                    Call
+                                                      callee: Identifier
+                                                        text: "h4"
+                                                      arguments: Sequence
+                                                        elements:
+                                                          Identifier
+                                                            text: "i4"
+          Named_Expression
+            name: Identifier
+              text: "then"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do4"
+                  arguments: Sequence
+                    elements:
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "do4"
+                  arguments: Sequence
+                    elements:
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "a5"
+            arguments: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "b5"
+                  arguments: Sequence
+                    elements:
+                      Call
+                        callee: Identifier
+                          text: "c5"
+                        arguments: Sequence
+                          elements:
+                            Identifier
+                              text: "d5"
+                            Identifier
+                              text: "e5"
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "f5"
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "a6"
+            arguments: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "b6"
+                  arguments: Sequence
+                    elements:
+                      Call
+                        callee: Identifier
+                          text: "c6"
+                        arguments: Sequence
+                          elements:
+                            Call
+                              callee: Identifier
+                                text: "d6"
+                              arguments: Sequence
+                                elements:
+                                  Identifier
+                                    text: "e6"
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "f6"
+                  arguments: Sequence
+                    elements:
+                      Call
+                        callee: Identifier
+                          text: "g6"
+                        arguments: Sequence
+                          elements:
+                            Identifier
+                              text: "h6"

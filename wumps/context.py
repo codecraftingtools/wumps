@@ -12,6 +12,8 @@ class Extra_State:
     def set_maximum_continuation_indent(self, max_indent):
         if len(max_indent) < len(self._indent_stack[-1][2]):
             self._indent_stack[-1][2] = max_indent
+    def reset_maximum_continuation_indent(self):
+        self._indent_stack[-1][2] = " "*999
     def current_indent(self):
         return len(self._indent_stack[-1][0])
     def previous_indent(self):

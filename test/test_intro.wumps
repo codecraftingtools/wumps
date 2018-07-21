@@ -35,7 +35,7 @@ line3
 -- continuation line(s) must be indented.  If more than one line
 -- continuation line is required, the subsequent continuation lines
 -- must be aligned with the first continuation line, but no more
--- continuation markers are required.
+-- continuation markers are used on the subsequent continuation lines.
 line1, line1, ...
   line2,
   line3
@@ -139,8 +139,8 @@ if greater(arg1, arg2) ...
   else:
     do_the_other()
 
--- A "partial unindent" is seen as an implicit continuation, allowing things
--- like this.
+-- A "partial unindent" is seen as an implicit continuation of the
+-- parent expression, allowing things like this.
 if done then:
     finish()
   else:

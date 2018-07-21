@@ -58,6 +58,8 @@ continuation_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def unbracketed_continuation_marker(input, pos):
     if state.is_bracketed():
         return None
+    if state.in_continuation():
+        return None
     match = continuation_marker_re.match(input, pos)
     if match:
         return input[pos:match.end()]
