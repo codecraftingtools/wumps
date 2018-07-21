@@ -1,13 +1,13 @@
 Wumps
 =====
 
-The goal of this project is to define a programming syntax suitable
-for defining domain-specific languages.  The aim is reduce the number
-of language keywords and built-in constructs in favor of user-defined
-functions and macros.  Although I have been pursuing the ideas
-encompassed by this project for quite a while, this project is fairly
-new, so the documentation is currently very scarce.  I hope to improve
-this over time.
+The goal of this project is to define a widely useful macro
+programming syntax suitable for defining domain-specific languages.
+The aim is reduce the number of language keywords and built-in
+constructs in favor of user-defined functions and macros.  Although I
+have been pursuing the ideas encompassed by this project for quite a
+while, this project is fairly new, so the documentation is currently
+very scarce.  I hope to improve this over time.
 
 Where to Start
 --------------
