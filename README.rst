@@ -32,7 +32,7 @@ note that I had to use ``pip3`` instead of ``pip`` as specified in
 ::
 
   git clone -b recognizer-context https://github.com/codecraftingtools/parglare.git
-  pip install -e parglare
+  sudo pip3 install -e parglare
 
 Next, clone the ``wumps`` git repository:
 
