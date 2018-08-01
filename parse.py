@@ -44,8 +44,7 @@ if args.glr:
 else:
     parser_type = Parser
 parser = parser_type(
-    grammar, debug=args.debug_parser, build_tree=args.build_tree,
-    call_actions_during_tree_build=True)
+    grammar, debug=args.debug_parser, build_tree=args.build_tree)
 
 # Process each file specified on the command line.
 for file_name in args.filenames:

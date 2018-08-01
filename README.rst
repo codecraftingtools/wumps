@@ -31,8 +31,10 @@ note that I had to use ``pip3`` instead of ``pip`` as specified in
 
 ::
 
-  git clone -b recognizer-context https://github.com/codecraftingtools/parglare.git
-  sudo pip3 install -e parglare
+  pip3 install --user click
+  mkdir ~/git
+  cd ~/git
+  git clone -b codecraftsmen https://github.com/codecraftingtools/parglare.git
 
 Next, clone the ``wumps`` git repository:
 
@@ -44,6 +46,7 @@ The parser can now be run like this:
 
 ::
 
+  export PYTHONPATH=~/git/parglare
   cd wumps
   ./parse.py test/test_intro.wumps
 
