@@ -10,14 +10,14 @@ side_action = get_collector()
 def open_bracket(context, node):
     context.extra.nest_bracket()
     return node
-side_action('open_brace')(open_bracket)
 side_action('open_parenthesis')(open_bracket)
+side_action('open_brace')(open_bracket)
 
 def close_bracket(context, node):
     context.extra.unnest_bracket()
     return node
-side_action('close_brace')(close_bracket)
 side_action('close_parenthesis')(close_bracket)
+side_action('close_brace')(close_bracket)
 
 @side_action
 def unbracketed_increased_indent(context, node):

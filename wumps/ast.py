@@ -6,7 +6,10 @@ _indent_token = "  "
 
 class Node:
     def __init__(self, context=None):
-        self.context = context
+        self.file_name = context.file_name
+        self.input_str = context.input_str
+        self.start_position = context.start_position
+        self.end_position = context.end_position
 
     def _get_attribute_ast_strs(self, depth):
         return ""
@@ -117,7 +120,7 @@ class Call(Node):
         super().__init__(context=context)
         self.callee = callee
         if not isinstance(arguments, Sequence):
-            arguments = Sequence(arguments)
+            arguments = Sequence(arguments, context=context)
         self.arguments = arguments
 
     @classmethod

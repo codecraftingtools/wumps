@@ -1,0 +1,4 @@
+- float regex was obtained from:
+  https://stackoverflow.com/questions/18547981/regex-for-matching-a-floating-point-number-which-is-not-an-integer
+
+- string regex concept from: https://gist.github.com/bpeterso2000/11277541

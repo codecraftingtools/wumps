@@ -1,0 +1,8 @@
+change partial unindent logic
+named tuple in state
+store indent level instead of indent?
+test cases
+indent -> indent_level (or depth?)
+comma_separated -> delimited inconsistency
+more comments
+empty values for key/value pairs
