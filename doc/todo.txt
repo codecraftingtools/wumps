@@ -3,6 +3,9 @@ named tuple in state
 store indent level instead of indent?
 test cases
 indent -> indent_level (or depth?)
-comma_separated -> delimited inconsistency
 more comments
 empty values for key/value pairs
+change continuation behavior to allow subsequent continuations?
+docstrings
+dot operator
+arithmetic operators

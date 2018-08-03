@@ -187,7 +187,7 @@ class File(Elements):
 
 class Sequence(Elements):
     @classmethod
-    def create_from_comma_separated_nodes(cls, context, nodes):
+    def create_from_comma_delimited_nodes(cls, context, nodes):
         elements = [nodes[0]]
         if len(nodes) > 2:
             if isinstance(nodes[2], Sequence):                

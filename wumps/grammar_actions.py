@@ -10,7 +10,7 @@ action = get_collector()
 action('file')                      (ast.File.create_from_nodes)
 action('expressions')               (ast.Elements.create_from_nodes)
 action('comma_delimited_sequence')  (ast.Sequence.
-                                         create_from_comma_separated_nodes)
+                                         create_from_comma_delimited_nodes)
 action('named_expression')          (ast.Named_Expression.create_from_nodes)
 action('braced_block')              (ast.Sequence.create_from_block_nodes)
 action('unbracketed_indented_block')(ast.Sequence.create_from_block_nodes)
