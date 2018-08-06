@@ -35,7 +35,7 @@ line3
 -- continuation line(s) must be indented.  If more than one line
 -- continuation line is required, the subsequent continuation lines
 -- must be aligned with the first continuation line, but no more
--- continuation markers are used on the subsequent continuation lines.
+-- continuation markers are required on the subsequent continuation lines.
 line1, line1, ...
   line2,
   line3

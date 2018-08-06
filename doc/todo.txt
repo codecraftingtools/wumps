@@ -1,11 +1,11 @@
-change partial unindent logic
-named tuple in state
-store indent level instead of indent?
 test cases
-indent -> indent_level (or depth?)
 more comments
 empty values for key/value pairs
-change continuation behavior to allow subsequent continuations?
+check that continuation behavior allows subsequent continuations
 docstrings
 dot operator
 arithmetic operators
+non-symbol operators
+multiple positional args (literal only)
+wumps parser class
+wumps --parse instead of parse.py

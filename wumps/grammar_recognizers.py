@@ -42,7 +42,11 @@ def unbracketed_decreased_indent_outside_continuation(context, input, pos):
         if new_line_and_possible_indent is not None:
             new_indent = new_line_and_possible_indent[1:]
             if len(new_indent) < context.extra.current_indent():
-                return ""
+                if len(new_indent) > context.extra.previous_indent():
+                    # partial unindent
+                    return new_line_and_possible_indent
+                else:
+                    return ""
 
 @recognizer
 def bracketed_new_line(context, input, pos):
@@ -58,8 +62,6 @@ continuation_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
 def unbracketed_continuation_marker(context, input, pos):
     if context.extra.is_bracketed():
         return None
-    if context.extra.in_continuation():
-        return None
     match = continuation_marker_re.match(input, pos)
     if match:
         return input[pos:match.end()]
@@ -72,8 +74,7 @@ def unbracketed_increased_indent_after_continuation_marker(context, input, pos):
             input, pos)
         if new_line_and_possible_indent is not None:
             new_indent = new_line_and_possible_indent[1:]
-            if (len(new_indent) > context.extra.current_indent() and
-                len(new_indent) <= context.extra.maximum_continuation_indent()):
+            if (len(new_indent) > context.extra.current_indent()):
                 return new_line_and_possible_indent
 
 @recognizer
@@ -90,14 +91,15 @@ def unbracketed_aligned_indent_inside_continuation(context, input, pos):
 @recognizer
 def unbracketed_decreased_indent_inside_continuation(context, input, pos):
     if (not context.extra.is_bracketed() and
+        not context.extra.starting_continuation() and
         context.extra.in_continuation()):
         new_line_and_possible_indent = match_new_line_and_possible_indent(
             input, pos)
         if new_line_and_possible_indent is not None:
             new_indent = new_line_and_possible_indent[1:]
             if len(new_indent) < context.extra.current_indent():
-                return ""
-
-@recognizer
-def unbracketed_partially_decreased_indent(context, input, pos):
-    pass
+                if len(new_indent) > context.extra.previous_indent():
+                    # partial unindent
+                    return new_line_and_possible_indent
+                else:
+                    return ""

@@ -79,8 +79,7 @@ discardable:
     unbracketed_continuation_marker |
     unbracketed_increased_indent_after_continuation_marker |
     unbracketed_aligned_indent_inside_continuation |
-    unbracketed_decreased_indent_inside_continuation |
-    unbracketed_partially_decreased_indent;
+    unbracketed_decreased_indent_inside_continuation;
 
 terminals
 
@@ -119,4 +118,3 @@ unbracketed_continuation_marker:;
 unbracketed_increased_indent_after_continuation_marker:;
 unbracketed_aligned_indent_inside_continuation:;
 unbracketed_decreased_indent_inside_continuation:;
-unbracketed_partially_decreased_indent:;
