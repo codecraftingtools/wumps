@@ -13,7 +13,8 @@ action('comma_delimited_sequence')  (ast.Sequence.
                                          create_from_comma_delimited_nodes)
 action('named_expression')          (ast.Named_Expression.create_from_nodes)
 action('braced_block')              (ast.Sequence.create_from_block_nodes)
-action('unbracketed_indented_block')(ast.Sequence.create_from_block_nodes)
+action('unbracketed_indented_block_without_continuation_marker')(
+                                     ast.Sequence.create_from_block_nodes)
 action('call')                      (ast.Call.create_from_nodes)
 action('named_argument')            (ast.Named_Expression.create_from_nodes)
 action('chained_call')              (ast.Call.create_from_nodes)

@@ -20,12 +20,12 @@ side_action('close_parenthesis')(close_bracket)
 side_action('close_brace')(close_bracket)
 
 @side_action
-def unbracketed_increased_indent(context, node):
+def unbracketed_increased_indent_without_continuation_marker(context, node):
     context.extra.push_indent(node[1:])
     return node
 
 @side_action
-def unbracketed_decreased_indent_one_level(context, node):
+def unbracketed_decreased_indent_outside_continuation(context, node):
     partial_indent = False
     new_line_and_possible_indent = match_new_line_and_possible_indent(
         context.input_str, context.start_position)
@@ -51,7 +51,7 @@ def unbracketed_increased_indent_after_continuation_marker(context, node):
     return node
 
 @side_action
-def unbracketed_decreased_indent_one_level_in_continuation(context, node):
+def unbracketed_decreased_indent_inside_continuation(context, node):
     partial_indent = False
     new_line_and_possible_indent = match_new_line_and_possible_indent(
         context.input_str, context.start_position)
@@ -62,4 +62,8 @@ def unbracketed_decreased_indent_one_level_in_continuation(context, node):
     context.extra.pop_indent()
     if partial_indent:
         context.extra.start_continuation()
+    return node
+
+@side_action
+def unbracketed_partially_decreased_indent(context, node):
     return node

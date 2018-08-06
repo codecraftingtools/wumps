@@ -9,7 +9,7 @@ from wumps.util import match_new_line_and_possible_indent
 recognizer = get_collector()
 
 @recognizer
-def unbracketed_aligned_indent(context, input, pos):
+def unbracketed_aligned_indent_outside_continuation(context, input, pos):
     if (not context.extra.is_bracketed() and
         not context.extra.starting_continuation() and 
         not context.extra.in_continuation()):
@@ -21,7 +21,8 @@ def unbracketed_aligned_indent(context, input, pos):
                 return new_line_and_possible_indent
 
 @recognizer
-def unbracketed_increased_indent(context, input, pos):
+def unbracketed_increased_indent_without_continuation_marker(
+        context, input, pos):
     if (not context.extra.is_bracketed() and
         not context.extra.starting_continuation()):
         new_line_and_possible_indent = match_new_line_and_possible_indent(
@@ -32,7 +33,7 @@ def unbracketed_increased_indent(context, input, pos):
                 return new_line_and_possible_indent
 
 @recognizer
-def unbracketed_decreased_indent_one_level(context, input, pos):
+def unbracketed_decreased_indent_outside_continuation(context, input, pos):
     if (not context.extra.is_bracketed() and
         not context.extra.starting_continuation() and
         not context.extra.in_continuation()):
@@ -76,7 +77,7 @@ def unbracketed_increased_indent_after_continuation_marker(context, input, pos):
                 return new_line_and_possible_indent
 
 @recognizer
-def unbracketed_aligned_indent_in_continuation(context, input, pos):
+def unbracketed_aligned_indent_inside_continuation(context, input, pos):
     if (not context.extra.is_bracketed() and
         context.extra.in_continuation()):
         new_line_and_possible_indent = match_new_line_and_possible_indent(
@@ -87,7 +88,7 @@ def unbracketed_aligned_indent_in_continuation(context, input, pos):
                 return new_line_and_possible_indent
 
 @recognizer
-def unbracketed_decreased_indent_one_level_in_continuation(context, input, pos):
+def unbracketed_decreased_indent_inside_continuation(context, input, pos):
     if (not context.extra.is_bracketed() and
         context.extra.in_continuation()):
         new_line_and_possible_indent = match_new_line_and_possible_indent(
@@ -96,3 +97,7 @@ def unbracketed_decreased_indent_one_level_in_continuation(context, input, pos):
             new_indent = new_line_and_possible_indent[1:]
             if len(new_indent) < context.extra.current_indent():
                 return ""
+
+@recognizer
+def unbracketed_partially_decreased_indent(context, input, pos):
+    pass

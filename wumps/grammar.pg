@@ -9,7 +9,7 @@ expressions:
 primary_delimiters:
     primary_delimiter+;
 primary_delimiter:
-    unbracketed_aligned_indent |
+    unbracketed_aligned_indent_outside_continuation |
     semicolon;
 expression:
     comma_delimited_sequence |
@@ -30,7 +30,7 @@ term:
     parenthesized_expression |
     empty_parentheses |
     braced_block |
-    unbracketed_indented_block |
+    unbracketed_indented_block_without_continuation_marker |
     identifier |
     string |
     integer |
@@ -41,10 +41,10 @@ empty_parentheses:
     open_parenthesis close_parenthesis;
 braced_block:
     open_brace expressions close_brace;
-unbracketed_indented_block:
-    unbracketed_increased_indent
+unbracketed_indented_block_without_continuation_marker:
+    unbracketed_increased_indent_without_continuation_marker
     expressions
-    unbracketed_decreased_indent_one_level;
+    unbracketed_decreased_indent_outside_continuation;
 identifier:
     simple_identifier |
     complex_identifier;
@@ -78,9 +78,9 @@ discardable:
     bracketed_new_line |
     unbracketed_continuation_marker |
     unbracketed_increased_indent_after_continuation_marker |
-    unbracketed_aligned_indent_in_continuation |
-    unbracketed_decreased_indent_one_level_in_continuation;
-    // unbracketed_partially_decreased_indent
+    unbracketed_aligned_indent_inside_continuation |
+    unbracketed_decreased_indent_inside_continuation |
+    unbracketed_partially_decreased_indent;
 
 terminals
 
@@ -109,13 +109,14 @@ insignificant_spaces: / +/;
 escaped_newline: /\\ *\n/;
 
 // Custom recognizers for non-discardable elements
-unbracketed_aligned_indent:;
-unbracketed_increased_indent:;
-unbracketed_decreased_indent_one_level:;
+unbracketed_aligned_indent_outside_continuation:;
+unbracketed_increased_indent_without_continuation_marker:;
+unbracketed_decreased_indent_outside_continuation:;
 
 // Custom recognizers for discardable elements
 bracketed_new_line:;
 unbracketed_continuation_marker:;
 unbracketed_increased_indent_after_continuation_marker:;
-unbracketed_aligned_indent_in_continuation:;
-unbracketed_decreased_indent_one_level_in_continuation:;
+unbracketed_aligned_indent_inside_continuation:;
+unbracketed_decreased_indent_inside_continuation:;
+unbracketed_partially_decreased_indent:;
