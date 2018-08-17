@@ -28,6 +28,7 @@ action('hexadecimal_integer')       (ast.Integer.create_from_node)
 action('binary_integer')            (ast.Integer.create_from_node)
 action('octal_integer')             (ast.Integer.create_from_node)
 action('float')                     (ast.Float.create_from_node)
+action('binary_operation')          (ast.Call.create_from_binary_operator_nodes)
 
 @action
 def parenthesized_expression(context, nodes):

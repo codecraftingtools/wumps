@@ -32,6 +32,7 @@ term:
     empty_parentheses |
     braced_block |
     unbracketed_indented_block_without_continuation_marker |
+    binary_operation |
     identifier |
     string |
     block_string |
@@ -47,6 +48,10 @@ unbracketed_indented_block_without_continuation_marker:
     unbracketed_increased_indent_without_continuation_marker
     expressions
     unbracketed_decreased_indent_outside_continuation;
+binary_operation:
+    term binary_operator term;
+binary_operator:
+    member_operator;
 identifier:
     simple_identifier |
     complex_identifier;
@@ -60,7 +65,8 @@ call:
     callee argument named_argument*;
 callee:
     identifier |
-    parenthesized_expression;
+    parenthesized_expression |
+    binary_operation;
 named_argument:
     key argument |
     key;
@@ -103,6 +109,7 @@ hexadecimal_integer: /[-+]?0[xX][0-9a-f_]+/;
 binary_integer: /[-+]?0[bB][01_]+/;
 octal_integer: /[-+]?0[oO][0-7_]+/;
 float: /[-+]?(?:[0-9_]+())?(?:\.+())?(?:[0-9_]+())?(?:[eE]-?\d+())?(?:\2\3|\1\4|\1\2|\2\4)/;
+member_operator: ".";
 
 // Discardable elements
 blank_line: /\n *(?=\n)/;

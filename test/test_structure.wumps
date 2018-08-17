@@ -45,3 +45,7 @@ if a7 ...
        i7
      else:
        j7
+a . b
+a.b c
+a b.c
+a.b.c d.e.f

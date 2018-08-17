@@ -957,3 +957,75 @@ File
               elements:
                 Identifier
                   text: "j7"
+    Call
+      callee: Operator
+        symbol: "."
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "a"
+          Identifier
+            text: "b"
+    Call
+      callee: Call
+        callee: Operator
+          symbol: "."
+        arguments: Sequence
+          elements:
+            Identifier
+              text: "a"
+            Identifier
+              text: "b"
+      arguments: Sequence
+        elements:
+          Identifier
+            text: "c"
+    Call
+      callee: Identifier
+        text: "a"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Operator
+              symbol: "."
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "b"
+                Identifier
+                  text: "c"
+    Call
+      callee: Call
+        callee: Operator
+          symbol: "."
+        arguments: Sequence
+          elements:
+            Identifier
+              text: "a"
+            Call
+              callee: Operator
+                symbol: "."
+              arguments: Sequence
+                elements:
+                  Identifier
+                    text: "b"
+                  Identifier
+                    text: "c"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Operator
+              symbol: "."
+            arguments: Sequence
+              elements:
+                Identifier
+                  text: "d"
+                Call
+                  callee: Operator
+                    symbol: "."
+                  arguments: Sequence
+                    elements:
+                      Identifier
+                        text: "e"
+                      Identifier
+                        text: "f"

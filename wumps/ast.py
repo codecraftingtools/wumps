@@ -26,6 +26,15 @@ class Nothing(Node):
     def __init__(self, context=None):
         super().__init__(context=context)
 
+class Operator(Node):
+    def __init__(self, symbol, context=None):
+        super().__init__(context=context)
+        self.symbol = symbol
+
+    def _get_attribute_ast_strs(self, depth):
+        return '{}symbol: "{}"\n'.format(
+            _indent_token*(depth+1), self.symbol)
+
 class Identifier(Node):
     def __init__(self, text, context=None):
         super().__init__(context=context)
@@ -155,6 +164,12 @@ class Call(Node):
                 arguments.append(nodes[1])
         if len(nodes) > 2:
             arguments.extend(nodes[2])
+        return cls(callee, arguments, context=context)
+
+    @classmethod
+    def create_from_binary_operator_nodes(cls, context, nodes):
+        callee = Operator(nodes[1], context=context)
+        arguments = [nodes[0], nodes[2]]
         return cls(callee, arguments, context=context)
 
     def _get_attribute_ast_strs(self, depth):
