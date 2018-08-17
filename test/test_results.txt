@@ -54,6 +54,10 @@ File
         text: "name4"
       expression: Identifier
         text: "e4"
+    Named_Expression
+      name: Identifier
+        text: "emptyname"
+      expression: Nothing
     Sequence
       elements:
         Named_Expression
@@ -187,6 +191,29 @@ File
             text: "pos3"
     Call
       callee: Identifier
+        text: "f6b"
+      arguments: Sequence
+        elements:
+          Named_Expression
+            name: Identifier
+              text: "key1"
+            expression: Identifier
+              text: "value2"
+          Identifier
+            text: "pos1"
+          Named_Expression
+            name: Identifier
+              text: "key2"
+            expression: Nothing
+          Named_Expression
+            name: Identifier
+              text: "key3"
+            expression: Identifier
+              text: "value3"
+          Identifier
+            text: "pos2"
+    Call
+      callee: Identifier
         text: "f7"
       arguments: Sequence
         elements:
@@ -232,6 +259,15 @@ File
               text: "key2"
             expression: Identifier
               text: "value2"
+          Named_Expression
+            name: Identifier
+              text: "key3"
+            expression: Nothing
+          Named_Expression
+            name: Identifier
+              text: "key4"
+            expression: Identifier
+              text: "value4"
     Call
       callee: Identifier
         text: "f9"
@@ -657,6 +693,15 @@ File
           text: "str 123"
         String
           text: "str1 ' \" 123"
+    String
+      text: "str 456\n789"
+    Named_Expression
+      name: Identifier
+        text: "s1"
+      expression: Sequence
+        elements:
+          String
+            text: "block string 1a\n block string 1b\n block string 1c"
     Identifier
       text: "1 \"complex\" 'identifier'"
 --- Parse Tree for "test/test_structure.wumps" ---
@@ -861,3 +906,54 @@ File
                           elements:
                             Identifier
                               text: "h6"
+    Call
+      callee: Identifier
+        text: "if"
+      arguments: Sequence
+        elements:
+          Call
+            callee: Identifier
+              text: "a7"
+            arguments: Sequence
+              elements:
+                Call
+                  callee: Identifier
+                    text: "b7"
+                  arguments: Sequence
+                    elements:
+                      Call
+                        callee: Identifier
+                          text: "c7"
+                        arguments: Sequence
+                          elements:
+                            Call
+                              callee: Identifier
+                                text: "d7"
+                              arguments: Sequence
+                                elements:
+                                  Call
+                                    callee: Identifier
+                                      text: "e7"
+                                    arguments: Sequence
+                                      elements:
+                                        Call
+                                          callee: Identifier
+                                            text: "f7"
+                                          arguments: Sequence
+                                            elements:
+                                              Call
+                                                callee: Identifier
+                                                  text: "g7"
+                                                arguments: Sequence
+                                                  elements:
+                                                    Identifier
+                                                      text: "h7"
+                                                    Identifier
+                                                      text: "i7"
+          Named_Expression
+            name: Identifier
+              text: "else"
+            expression: Sequence
+              elements:
+                Identifier
+                  text: "j7"
