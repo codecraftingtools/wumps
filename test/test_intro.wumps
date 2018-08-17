@@ -43,6 +43,9 @@ line1, line1, ...
 -- Expressions can be named like this.
 name4: e4
 
+-- An empty expression can be named.
+emptyname:
+
 -- Naming has a higher precedence than sequence construction.
 name5: e5a, e5b
 
@@ -80,6 +83,9 @@ f5(pos1, pos2, key1: value1, key2: value2)
 -- The positional arguments are not required to be first.
 f6(key1: value1, pos1, key2: value2, pos2, pos3)
 
+-- Keyword arguments might not have a value.
+f6b(key1: value2, pos1, key2:, key3: value3, pos2)
+
 -- Although multiple positional arguments cannot be passed to a
 -- function without using parentheses, additonal keyword arguments can
 -- be tacked on the end of a function call.
@@ -90,7 +96,7 @@ f7(key1: value1, key2: value2)
 
 -- One positional argument and many keyword arguments can be called without
 -- using parentheses.
-f8 pos1 key1: value1 key2: value2
+f8 pos1 key1: value1 key2: value2 key3: key4: value4
 
 -- Trying to pass any more would result in nesting.
 f9 pos1 notpos2 key1: value1 key2: value2

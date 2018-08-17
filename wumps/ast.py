@@ -2,6 +2,8 @@
 Abstract syntax tree nodes.
 """
 
+import textwrap
+
 _indent_token = "  "
 
 class Node:
@@ -19,6 +21,10 @@ class Node:
         s = "{}{}\n".format(_indent_token*first_depth, self.__class__.__name__)
         s += self._get_attribute_ast_strs(depth)
         return s
+
+class Nothing(Node):
+    def __init__(self, context=None):
+        super().__init__(context=context)
 
 class Identifier(Node):
     def __init__(self, text, context=None):
@@ -51,12 +57,21 @@ class String(Node):
 
     @classmethod
     def create_from_node(cls, context, node):
-        # Strip quotes and remove escape sequences.
-        unescaped_text = node[1:-1].replace('\\"','"')
+        # If this is a block string
+        if node.startswith('"""'):
+            # Strip triple quotes, remove common leading whitespace
+            # and remove leading/trailing newlines.  No escape
+            # characters are currently implemented for block strings.
+            unescaped_text = textwrap.dedent(
+                node[3:-3]).strip()
+        else:
+            # Strip quotes and remove escape sequences.
+            unescaped_text = node[1:-1].replace('\\"','"')
         return cls(unescaped_text, context=context)
 
     def _get_attribute_ast_strs(self, depth):
         escaped_text = self.text.replace('"','\\"')
+        escaped_text = escaped_text.replace('\n','\\n')
         return '{}text: "{}"\n'.format(
             _indent_token*(depth+1), escaped_text)
 
@@ -106,7 +121,11 @@ class Named_Expression(Node):
 
     @classmethod
     def create_from_nodes(cls, context, nodes):
-        return cls(nodes[0], nodes[1], context=context)
+        if len(nodes) < 2:
+            expression = Nothing(context)
+        else:
+            expression = nodes[1]
+        return cls(nodes[0], expression, context=context)
 
     def _get_attribute_ast_strs(self, depth):
         s = "{}name: ".format(_indent_token*(depth+1))

@@ -2,6 +2,15 @@
 
 -- strings
 "str 123", "str1 ' \" 123"
+"str 456\n789"
+
+-- block strings
+s1:
+  """
+  block string 1a
+   block string 1b
+   block string 1c
+  """
 
 -- identifiers
 '1 "complex" \'identifier\''

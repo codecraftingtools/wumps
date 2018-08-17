@@ -56,7 +56,7 @@ def bracketed_new_line(context, input, pos):
         if new_line_and_possible_indent is not None:
             return new_line_and_possible_indent
 
-continuation_marker_re = re.compile(r"\.\.\. *(#.*)?(?=\n)")
+continuation_marker_re = re.compile(r"\.\.\. *(--.*)?(?=\n)")
 
 @recognizer
 def unbracketed_continuation_marker(context, input, pos):

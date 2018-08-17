@@ -22,7 +22,8 @@ non_sequence:
     named_expression |
     anonymous_expression;
 named_expression:
-    key anonymous_expression;
+    key anonymous_expression |
+    key;
 anonymous_expression:
     term |
     call;
@@ -33,6 +34,7 @@ term:
     unbracketed_indented_block_without_continuation_marker |
     identifier |
     string |
+    block_string |
     integer |
     float;
 parenthesized_expression:
@@ -60,7 +62,8 @@ callee:
     identifier |
     parenthesized_expression;
 named_argument:
-    key argument;
+    key argument |
+    key;
 argument:
     term |
     chained_call;
@@ -94,6 +97,7 @@ close_brace: "}";
 simple_identifier: /[a-zA-Z_]+[a-zA-Z0-9_]*/;
 complex_identifier: /'(.*?)(?<!\\)'/;
 string: /"(.*?)(?<!\\)"/;
+block_string: /"""(([^"]+)|(\n))*"""/;
 decimal_integer: /[-+]?[0-9_]+/;
 hexadecimal_integer: /[-+]?0[xX][0-9a-f_]+/;
 binary_integer: /[-+]?0[bB][01_]+/;
