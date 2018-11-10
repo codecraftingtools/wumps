@@ -23,6 +23,7 @@ non_sequence:
     anonymous_expression;
 named_expression:
     key anonymous_expression |
+    key named_expression |
     key;
 anonymous_expression:
     term |
@@ -65,6 +66,8 @@ call:
     callee argument named_argument*;
 callee:
     identifier |
+    integer |
+    float |
     parenthesized_expression |
     binary_operation;
 named_argument:

@@ -184,3 +184,9 @@ Drawing
     color: 0xff0000
     x: 100
     y: 100
+
+-- Nested named items
+top
+  constrains:
+    a: b: c: d 5
+    5 seconds

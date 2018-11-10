@@ -1,4 +1,4 @@
-Wumps
+wumps
 =====
 
 The goal of this project is to define a widely useful macro
