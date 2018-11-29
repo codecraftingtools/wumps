@@ -640,6 +640,39 @@ File
                     text: "y"
                   expression: Integer
                     value: 100
+    Call
+      callee: Identifier
+        text: "top"
+      arguments: Sequence
+        elements:
+          Named_Expression
+            name: Identifier
+              text: "constrains"
+            expression: Sequence
+              elements:
+                Named_Expression
+                  name: Identifier
+                    text: "a"
+                  expression: Named_Expression
+                    name: Identifier
+                      text: "b"
+                    expression: Named_Expression
+                      name: Identifier
+                        text: "c"
+                      expression: Call
+                        callee: Identifier
+                          text: "d"
+                        arguments: Sequence
+                          elements:
+                            Integer
+                              value: 5
+                Call
+                  callee: Integer
+                    value: 5
+                  arguments: Sequence
+                    elements:
+                      Identifier
+                        text: "seconds"
 --- Parse Tree for "test/test_numbers.wumps" ---
 File
   path: "test/test_numbers.wumps"
