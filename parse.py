@@ -11,7 +11,7 @@ wumps_root = Path(sys.path[0])
 sys.path.insert(1, str(wumps_root))
 
 import argparse
-from wumps.context import Context
+from wumps.parglare.context import Context
 from parglare import Parser, GLRParser, Grammar
 
 arg_parser = argparse.ArgumentParser(
@@ -36,7 +36,7 @@ arg_parser.add_argument(
 )
 args = arg_parser.parse_args()
 
-grammar_file = str(wumps_root / "wumps" / "grammar.pg")
+grammar_file = str(wumps_root / "wumps" / "parglare" / "grammar.pg")
 grammar = Grammar.from_file(grammar_file)
 
 if args.glr:

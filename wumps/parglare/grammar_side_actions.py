@@ -3,7 +3,7 @@ Side-effect actions to be taken when grammar patterns are recognized.
 """
 
 from parglare import get_collector
-from wumps.util import match_new_line_and_possible_indent
+from wumps.parglare.util import match_new_line_and_possible_indent
 
 side_action = get_collector()
 
