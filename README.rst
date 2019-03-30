@@ -54,7 +54,7 @@ You can now make up your own grammar files and try them.
 
 .. _test_intro.wumps: https://github.com/codecraftingtools/wumps/blob/master/test/test_intro.wumps
 .. _test_results.txt: https://github.com/codecraftingtools/wumps/blob/master/test/test_results.txt
-.. _grammar.pg: https://github.com/codecraftingtools/wumps/blob/master/wumps/grammar.pg
+.. _grammar.pg: https://github.com/codecraftingtools/wumps/blob/master/wumps/parglare/grammar.pg
 .. _parglare: https://github.com/igordejanovic/parglare
 .. _grammar documentation: http://www.igordejanovic.net/parglare/grammar_language/
 .. _install parglare: https://github.com/igordejanovic/parglare#installation
