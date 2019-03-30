@@ -4,41 +4,41 @@ file:
     expressions
     EOF;
 expressions:
-    primary_delimiters? expression+[primary_delimiters] primary_delimiters? |
-    primary_delimiters?;
+    primary_delimiters? expression+[primary_delimiters] primary_delimiters?
+  | primary_delimiters?;
 primary_delimiters:
     primary_delimiter+;
 primary_delimiter:
-    unbracketed_aligned_indent_outside_continuation |
-    semicolon;
+    unbracketed_aligned_indent_outside_continuation
+  | semicolon;
 expression:
-    comma_delimited_sequence |
-    non_sequence;
+    comma_delimited_sequence
+  | non_sequence;
 comma_delimited_sequence:
-    non_sequence comma comma_delimited_sequence |
-    non_sequence comma non_sequence |
-    non_sequence comma;
+    non_sequence comma comma_delimited_sequence
+  | non_sequence comma non_sequence
+  | non_sequence comma;
 non_sequence:
-    named_expression |
-    anonymous_expression;
+    named_expression
+  | anonymous_expression;
 named_expression:
-    key anonymous_expression |
-    key named_expression |
-    key;
+    key anonymous_expression
+  | key named_expression
+  | key;
 anonymous_expression:
-    term |
-    call;
+    term
+  | call;
 term:
-    parenthesized_expression |
-    empty_parentheses |
-    braced_block |
-    unbracketed_indented_block_without_continuation_marker |
-    binary_operation |
-    identifier |
-    string |
-    block_string |
-    integer |
-    float;
+    parenthesized_expression
+  | empty_parentheses
+  | braced_block
+  | unbracketed_indented_block_without_continuation_marker
+  | binary_operation
+  | identifier
+  | string
+  | block_string
+  | integer
+  | float;
 parenthesized_expression:
     open_parenthesis expression close_parenthesis;
 empty_parentheses:
@@ -54,44 +54,44 @@ binary_operation:
 binary_operator:
     member_operator;
 identifier:
-    simple_identifier |
-    complex_identifier;
+    simple_identifier
+  | complex_identifier;
 integer:
-    decimal_integer |
-    hexadecimal_integer |
-    binary_integer |
-    octal_integer;
+    decimal_integer
+  | hexadecimal_integer
+  | binary_integer
+  | octal_integer;
 call:
-    callee named_argument+ |
-    callee argument named_argument*;
+    callee named_argument+
+  | callee argument named_argument*;
 callee:
-    identifier |
-    integer |
-    float |
-    parenthesized_expression |
-    binary_operation;
+    identifier
+  | integer
+  | float
+  | parenthesized_expression
+  | binary_operation;
 named_argument:
-    key argument |
-    key;
+    key argument
+  | key;
 argument:
-    term |
-    chained_call;
+    term
+  | chained_call;
 chained_call:
     callee argument;
 
 LAYOUT:
     discardable*;
 discardable:
-    blank_line |
-    full_line_comment |
-    partial_line_comment |
-    insignificant_spaces |
-    escaped_newline |
-    bracketed_new_line |
-    unbracketed_continuation_marker |
-    unbracketed_increased_indent_after_continuation_marker |
-    unbracketed_aligned_indent_inside_continuation |
-    unbracketed_decreased_indent_inside_continuation;
+    blank_line
+  | full_line_comment
+  | partial_line_comment
+  | insignificant_spaces
+  | escaped_newline
+  | bracketed_new_line
+  | unbracketed_continuation_marker
+  | unbracketed_increased_indent_after_continuation_marker
+  | unbracketed_aligned_indent_inside_continuation
+  | unbracketed_decreased_indent_inside_continuation;
 
 terminals
 
