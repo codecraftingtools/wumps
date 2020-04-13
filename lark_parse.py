@@ -27,7 +27,7 @@ class Post_Lex_Processor:
             not self.context.in_continuation() and
             len(new_indent) == self.context.current_indent()):
             yield Token.new_borrow_pos(
-                "_UNBRACKETED_NEWLINE_AND_ALIGNED_INDENT_OUTSIDE_CONTINUATION",
+                "_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION",
                 token, token)
         elif (not self.context.is_bracketed() and
               not self.context.starting_continuation() and 
@@ -35,7 +35,7 @@ class Post_Lex_Processor:
             self.context.push_indent(
                 amount=len(new_indent), is_continuation=False)
             yield Token.new_borrow_pos(
-                "_UNBRACKETED_NEWLINE_AND_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER",
+                "_UNBRACKETED_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER",
                 token, token)
         elif (not self.context.is_bracketed() and
               not self.context.starting_continuation() and 
@@ -47,15 +47,15 @@ class Post_Lex_Processor:
                 self.context.push_indent(
                     amount=len(new_indent), is_continuation=True)
                 yield Token.new_borrow_pos(
-                    "_UNBRACKETED_NEWLINE_AND_DECREASED_INDENT_OUTSIDE_CONTINUATION",
+                    "_UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION",
                     token, token)
             else:
                 self.context.pop_indent()
                 yield Token.new_borrow_pos(
-                    "_UNBRACKETED_NEWLINE_AND_DECREASED_INDENT_OUTSIDE_CONTINUATION",
+                    "_UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION",
                     "", token)
                 if not self.context.in_continuation():
-                    yield Token("_UNBRACKETED_NEWLINE_AND_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
+                    yield Token("_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
                 if len(new_indent) < self.context.current_indent():
                     # More than one level
                     for t in self.handle_newline_and_maybe_indent(token):
@@ -66,20 +66,20 @@ class Post_Lex_Processor:
         elif (not self.context.is_bracketed() and
               self.context.starting_continuation() and
               len(new_indent) > self.context.current_indent()):
-            # UNBRACKETED_NEWLINE_AND_INCREASED_INDENT_AFTER_CONTINUATION_MARKER
+            # UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER
             self.context.push_indent(
                 amount=len(new_indent), is_continuation=True)
         elif (not self.context.is_bracketed() and
               self.context.in_continuation() and
               len(new_indent) == self.context.current_indent()):
-            # UNBRACKETED_NEWLINE_AND_ALIGNED_INDENT_INSIDE_CONTINUATION
+            # UNBRACKETED_ALIGNED_INDENT_INSIDE_CONTINUATION
             pass
         elif (not self.context.is_bracketed() and
               not self.context.starting_continuation() and
               self.context.in_continuation() and
               len(new_indent) < self.context.current_indent()):
-            # UNBRACKETED_NEWLINE_AND_DECREASED_INDENT_INSIDE_CONTINUATION
-            yield Token("_UNBRACKETED_NEWLINE_AND_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
+            # UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION
+            yield Token("_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
             if len(new_indent) > self.context.previous_indent():
                 # partial unindent
                 self.context.pop_indent()
@@ -118,9 +118,9 @@ class Post_Lex_Processor:
                 yield token
         while self.context.current_indent() > 0:
             self.context.pop_indent()
-            yield Token("_UNBRACKETED_NEWLINE_AND_DECREASED_INDENT_OUTSIDE_CONTINUATION","")
+            yield Token("_UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION","")
             if not self.context.in_continuation():
-                yield Token("_UNBRACKETED_NEWLINE_AND_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
+                yield Token("_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
 
     # XXX Hack for ContextualLexer. Maybe there's a more elegant solution?
     @property
@@ -132,9 +132,9 @@ def print_lex(parser, text):
     for token in generator:
         if token.type in [
                 "NEWLINE_AND_MAYBE_INDENT",
-                "_UNBRACKETED_NEWLINE_AND_ALIGNED_INDENT_OUTSIDE_CONTINUATION",
-                "_UNBRACKETED_NEWLINE_AND_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER",
-                "_UNBRACKETED_NEWLINE_AND_DECREASED_INDENT_OUTSIDE_CONTINUATION",
+                "_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION",
+                "_UNBRACKETED_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER",
+                "_UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION",
         ]:
             print(token.type)
         else:
