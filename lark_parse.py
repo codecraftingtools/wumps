@@ -59,7 +59,7 @@ def main():
     grammar = open(grammar_file).read()
     grammar = grammar.replace("\\\n", "")
     parser = Lark(grammar,
-                  start="file",
+                  start=["file", "unused_terminals"],
                   parser=args.parser,
                   lexer=args.lexer,
                   postlex=post_lex.Post_Lex_Processor(),
@@ -80,7 +80,8 @@ def main():
             print(f'--- Post-Lexer output for "{file_name}" ---')
             post_lex.print_lex(generator)
             print()
-        tree = parser.parse(text)
+        if args.parse or args.ast:
+            tree = parser.parse(text, start="file")
         if args.parse:
             print(f'--- Parse Tree for "{file_name}" ---')
             print(tree.pretty(),end="")

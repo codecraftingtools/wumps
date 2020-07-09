@@ -116,7 +116,7 @@ class Post_Lex_Processor:
     # XXX Hack for ContextualLexer. Maybe there's a more elegant solution?
     @property
     def always_accept(self):
-        return (self.NL_type,)
+        return "NEWLINE_AND_MAYBE_INDENT", "CONTINUATION_MARKER"
 
 def print_lex(generator):
     for token in generator:
