@@ -118,9 +118,7 @@ class Post_Lex_Processor:
     def always_accept(self):
         return (self.NL_type,)
 
-def print_lex(parser, text):
-    #generator = parser._build_lexer().lex(text)
-    generator = parser.lex(text)
+def print_lex(generator):
     for token in generator:
         if token.type in [
                 "NEWLINE_AND_MAYBE_INDENT",
