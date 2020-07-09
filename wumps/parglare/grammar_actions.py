@@ -3,7 +3,7 @@ Actions to be taken when grammar patterns are recognized.
 """
 
 from parglare import get_collector
-from wumps import ast
+from wumps.parglare import ast
 
 action = get_collector()
 
