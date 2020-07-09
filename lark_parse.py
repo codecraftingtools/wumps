@@ -70,29 +70,27 @@ def main():
     # Process each file specified on the command line.
     for file_name in args.filenames:
         text = open(file_name).read()
-        try:
-            if args.lex:
-                generator = parser._build_lexer().lex(text)
-                print(f'--- Lexer output for "{file_name}" ---')
-                post_lex.print_lex(generator)
-                print()
-            if args.post_lex:
-                generator = parser.lex(text)
-                print(f'--- Post-Lexer output for "{file_name}" ---')
-                post_lex.print_lex(generator)
-                print()
-            tree = parser.parse(text)
-            if args.parse:
-                print(f'--- Parse Tree for "{file_name}" ---')
-                print(tree.pretty(),end="")
-                print()
-            if args.ast:
-                print("not implemented")
-                print()
-            #for item in tree.children:
-            #    print(type(item))
-        except Exception as e:
-            print(e)
+        if args.lex:
+            generator = parser._build_lexer().lex(text)
+            print(f'--- Lexer output for "{file_name}" ---')
+            post_lex.print_lex(generator)
+            print()
+        if args.post_lex:
+            generator = parser.lex(text)
+            print(f'--- Post-Lexer output for "{file_name}" ---')
+            post_lex.print_lex(generator)
+            print()
+        tree = parser.parse(text)
+        if args.parse:
+            print(f'--- Parse Tree for "{file_name}" ---')
+            print(tree.pretty(),end="")
+            print()
+        if args.ast:
+            print("not implemented")
+            print()
+            
+        #for item in tree.children:
+        #    print(type(item))
             
 if __name__ == "__main__":
     main()
