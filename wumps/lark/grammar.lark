@@ -87,11 +87,13 @@ chained_call: \
 %declare _UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION
 
 // Tokens generated and discarded by post-lex processing
+// These do not affect post-lex processing context.
+//   IMPLICIT_CONTINUATION_INDENT
 //   BRACKETED_NEWLINE
 //   UNBRACKETED_ALIGNED_INDENT_INSIDE_CONTINUATION
 
 // Tokens generated and discarded by post-lex processing.
-// These afffect post-lex processing context.
+// These affect post-lex processing context.
 //   UNBRACKETED_CONTINUATION_MARKER
 //   UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER
 //   UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION

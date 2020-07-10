@@ -35,10 +35,15 @@ class Post_Lex_Processor:
             if len(new_indent) > self.context.previous_indent():
                 # partial unindent
                 self.context.pop_indent()
-                self.context.push_indent(
-                    amount=len(new_indent), is_continuation=True)
                 yield Token.new_borrow_pos(
                     "_UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION",
+                    token, token)
+                self.context.push_indent(
+                    amount=len(new_indent), is_continuation=True)
+                # The following yield could be omitted -- the token is
+                # removed by the post-lex filter
+                yield Token.new_borrow_pos(
+                    "IMPLICIT_CONTINUATION_INDENT",
                     token, token)
             else:
                 self.context.pop_indent()
@@ -52,32 +57,57 @@ class Post_Lex_Processor:
                     for t in self.handle_newline_and_maybe_indent(token):
                         yield t
         elif (self.context.is_bracketed()):
-            # Ignore BRACKETED_NEWLINE
-            pass
+            # The following yield could be omitted -- the token is
+            # removed by the post-lex filter
+            yield Token.new_borrow_pos(
+                "BRACKETED_NEWLINE",
+                token, token)
         elif (not self.context.is_bracketed() and
               self.context.starting_continuation() and
               len(new_indent) > self.context.current_indent()):
-            # UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER
             self.context.push_indent(
                 amount=len(new_indent), is_continuation=True)
+            # The following yield could be omitted -- the token is
+            # removed by the post-lex filter
+            yield Token.new_borrow_pos(
+                "UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER",
+                token, token)
         elif (not self.context.is_bracketed() and
               self.context.in_continuation() and
               len(new_indent) == self.context.current_indent()):
-            # UNBRACKETED_ALIGNED_INDENT_INSIDE_CONTINUATION
-            pass
+            # The following yield could be omitted -- the token is
+            # removed by the post-lex filter
+            yield Token.new_borrow_pos(
+                "UNBRACKETED_ALIGNED_INDENT_INSIDE_CONTINUATION",
+                token, token)
         elif (not self.context.is_bracketed() and
               not self.context.starting_continuation() and
               self.context.in_continuation() and
               len(new_indent) < self.context.current_indent()):
-            # UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION
-            yield Token("_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
             if len(new_indent) > self.context.previous_indent():
                 # partial unindent
                 self.context.pop_indent()
+                # The following yield could be omitted -- the token is
+                # removed by the post-lex filter
+                yield Token.new_borrow_pos(
+                    "UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION",
+                token, token)
                 self.context.push_indent(
                     amount=len(new_indent), is_continuation=True)
+                # The following yield could be omitted -- the token is
+                # removed by the post-lex filter
+                yield Token.new_borrow_pos(
+                    "IMPLICIT_CONTINUATION_INDENT",
+                    token, token)
             else:
                 self.context.pop_indent()
+                # The following yield could be omitted -- the token is
+                # removed by the post-lex filter
+                yield Token.new_borrow_pos(
+                    "UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION",
+                    token, token)
+                yield Token(
+                    "_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION","")
                 if len(new_indent) < self.context.current_indent():
                     # More than one level
                     for t in self.handle_newline_and_maybe_indent(token):
@@ -95,8 +125,12 @@ class Post_Lex_Processor:
                 yield token
             elif token.type == "CONTINUATION_MARKER":
                 if not self.context.is_bracketed():
-                    # UNBRACKETED_CONTINUATION_MARKER
                     self.context.start_continuation()
+                    # The following yield could be omitted -- the token is
+                    # removed by the post-lex filter
+                    yield Token.new_borrow_pos(
+                        "UNBRACKETED_CONTINUATION_MARKER",
+                        token, token)
                 else:
                     yield token
             elif token.type == "NEWLINE_AND_MAYBE_INDENT":
@@ -118,13 +152,43 @@ class Post_Lex_Processor:
     def always_accept(self):
         return "NEWLINE_AND_MAYBE_INDENT", "CONTINUATION_MARKER"
 
+class Post_Lex_Processor_and_Filter:
+    always_accept = Post_Lex_Processor.always_accept
+
+    def __init__(self, unfiltered=False):
+        self._unfiltered = unfiltered
+        
+    def process(self, stream):
+        generator = Post_Lex_Processor().process(stream)
+        for token in generator:
+            if token.type in [
+                    "IMPLICIT_CONTINUATION_INDENT",
+                    "BRACKETED_NEWLINE",
+                    "UNBRACKETED_ALIGNED_INDENT_INSIDE_CONTINUATION",
+                    
+                    "UNBRACKETED_CONTINUATION_MARKER",
+                    "UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER",
+                    "UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION",
+            ] and not self._unfiltered:
+                continue
+            else:
+                yield token
+
 def print_lex(generator):
     for token in generator:
         if token.type in [
                 "NEWLINE_AND_MAYBE_INDENT",
+                
                 "_UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION",
                 "_UNBRACKETED_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER",
                 "_UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION",
+
+                "IMPLICIT_CONTINUATION_INDENT",
+                "BRACKETED_NEWLINE",
+                "UNBRACKETED_ALIGNED_INDENT_INSIDE_CONTINUATION",
+
+                "UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER",
+                "UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION",
         ]:
             print(token.type)
         else:

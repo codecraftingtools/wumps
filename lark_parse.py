@@ -35,6 +35,11 @@ def create_arg_parser():
         action = "store_true",
         help = "print the output of the lexer before post-lexing and parsing")
     arg_parser.add_argument(
+        "--post-lex-unfiltered",
+        action = "store_true",
+        help = "print the output of the post-lexer before filtering and "
+        "parsing")
+    arg_parser.add_argument(
         "--post-lex",
         action = "store_true",
         help = "print the output of the post-lexer before parsing")
@@ -62,7 +67,8 @@ def main():
                   start=["file", "unused_terminals"],
                   parser=args.parser,
                   lexer=args.lexer,
-                  postlex=post_lex.Post_Lex_Processor(),
+                  postlex=post_lex.Post_Lex_Processor_and_Filter(
+                      args.post_lex_unfiltered),
                   #ambiguity="explicit",
                   debug=args.debug,
                   propagate_positions=True,
@@ -76,6 +82,12 @@ def main():
             print(f'--- Lexer output for "{file_name}" ---')
             post_lex.print_lex(generator)
             print()
+        if args.post_lex_unfiltered:
+            generator = parser.lex(text)
+            print(f'--- Unfiltered post-Lexer output for "{file_name}" ---')
+            post_lex.print_lex(generator)
+            print()
+            continue # Cannot parse with unfiltered post-lex output
         if args.post_lex:
             generator = parser.lex(text)
             print(f'--- Post-Lexer output for "{file_name}" ---')
