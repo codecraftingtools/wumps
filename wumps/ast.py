@@ -6,10 +6,11 @@ _indent_token = "  "
 
 class Node:
     def __init__(self, context=None):
-        self.file_name = context.file_name
-        self.input_str = context.input_str
-        self.start_position = context.start_position
-        self.end_position = context.end_position
+        if context:
+            self.file_name = context.file_name
+            self.input_str = context.input_str
+            self.start_position = context.start_position
+            self.end_position = context.end_position
 
     def _get_attribute_ast_strs(self, depth):
         return ""

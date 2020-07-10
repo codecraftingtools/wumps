@@ -38,7 +38,7 @@ _non_identifier_term: \
   | empty_parentheses
   | braced_block
   | unbracketed_indented_block_without_continuation_marker
-  | _binary_operation
+  | binary_operation
   | _string
   | _integer
   | FLOAT
@@ -52,7 +52,7 @@ unbracketed_indented_block_without_continuation_marker: \
     _UNBRACKETED_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER \
     _expressions \
     _UNBRACKETED_DECREASED_INDENT_OUTSIDE_CONTINUATION -> sequence
-_binary_operation: \
+binary_operation: \
     _term _binary_operator _term
 _binary_operator: \
     MEMBER_OPERATOR

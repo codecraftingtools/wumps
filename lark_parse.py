@@ -8,7 +8,7 @@ sys.path.insert(1, str(wumps_root))
 
 import argparse
 from lark import Lark
-from wumps.lark import post_lex
+from wumps.lark import post_lex, ast
 
 grammar_file = str(wumps_root / "wumps" / "lark" / "grammar.lark")
 
@@ -65,6 +65,7 @@ def main():
                   postlex=post_lex.Post_Lex_Processor(),
                   #ambiguity="explicit",
                   debug=args.debug,
+                  propagate_positions=True,
                   )
 
     # Process each file specified on the command line.
@@ -87,7 +88,9 @@ def main():
             print(tree.pretty(),end="")
             print()
         if args.ast:
-            print("not implemented")
+            print(f'--- Abstract Syntax Tree for "{file_name}" ---')
+            a_tree = ast.build_ast(tree, file_name=file_name)
+            print(a_tree.get_ast_str(),end="")
             print()
             
         #for item in tree.children:
