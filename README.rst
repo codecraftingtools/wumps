@@ -1,60 +1,82 @@
-wumps
+=====
+Wumps
 =====
 
 The goal of this project is to define a widely useful macro
 programming syntax suitable for defining domain-specific languages.
-The aim is reduce the number of language keywords and built-in
-constructs in favor of user-defined functions and macros.  Although I
-have been pursuing the ideas encompassed by this project for quite a
-while, this project is fairly new, so the documentation is currently
-very scarce.  I hope to improve this over time.
+The aim is to reduce the number of language keywords and built-in
+constructs in favor of user-defined functions and macros.
+
+Wumps is part of the `Code Craftsmen`_ project.  The `documentation`_
+is hosted on `Read the Docs`_ and the `source code`_ can be found on
+`GitHub`_.
+
+Status
+======
+
+At this point, the grammar is fairly complete and the parser is able
+to parse source files and build an abstract syntax tree.  Although the
+ideas encompassed by this project have been developing for quite a
+while, the code base is fairly new.  As one might expect, the current
+documentation is sparse, but this will hopefully improve over time.
 
 Where to Start
---------------
+==============
 
-For an idea of the language syntax, please see the `test_intro.wumps`_
-file in the ``test`` subdirectory.  As you read over it, you can
-examine the resulting parse tree in `test_results.txt`_ to help
-understand how the language works.  The `grammar.pg`_ file will also
-be of interest.  The parglare_ `grammar documentation`_ describes the
-format of the grammar file.
+To get an idea of the language syntax, please see the
+`test_intro.wumps`_ file in the ``test`` subdirectory.  As you read
+over it, you can examine the resulting parse tree in
+`test_results.txt`_ to help understand how the language works.  The
+`grammar.lark`_ file will also be of interest.  The `Lark grammar
+documentation`_ describes the format of the grammar file.
 
-Running the Parser
-------------------
+Installation Notes
+==================
 
-The ``wumps`` parser is written in Python 3.  If you want to try
-running the parser yourself, first `install parglare`_.  Right now,
-``wumps`` requires a modified branch of ``parglare``, so please use
-the installation instructions below to install ``parglare``.  Also
-note that I had to use ``pip3`` instead of ``pip`` as specified in
-``parglare`` installation instructions.
+The Wumps parser is written in `Python 3`_ and requires the `Lark`_
+Python package to operate.  Please set up a virtual Python environment
+using `virtualenvwrapper`_ and then follow the installation
+instructions for the `Lark`_ package.
 
-::
-
-  pip3 install --user click
-  mkdir ~/git
-  cd ~/git
-  git clone -b codecraftsmen https://github.com/codecraftingtools/parglare.git
-
-Next, clone the ``wumps`` git repository:
-
-::
+The Wumps source code can be pulled down from `GitHub`_ using this
+`Git`_ command::
 
   git clone https://github.com/codecraftingtools/wumps.git
+
+No futher installation is required.
+
+The ``hildegard`` application can
+be executed like this::
+
+  workon codecraftsmen
+  cd hildegard
+  ./scripts/hildegard
+
+Running the Parser
+==================
 
 The parser can now be run like this:
 
 ::
 
-  export PYTHONPATH=~/git/parglare
+  workon codecraftsmen
   cd wumps
   ./parse.py test/test_intro.wumps
 
-You can now make up your own grammar files and try them.
+You can now make up your own source files using the Wumps syntax and
+try to parse them.
 
+.. _Code Craftsmen: https://www.codecraftsmen.org
+.. _documentation: https://wumps.readthedocs.io
+.. _Read the Docs: https://www.codecraftsmen.org/foundation.html#read-the-docs
+.. _source code: https://github.com/codecraftingtools/wumps
+.. _GitHub: https://www.codecraftsmen.org/foundation.html#github
 .. _test_intro.wumps: https://github.com/codecraftingtools/wumps/blob/master/test/test_intro.wumps
 .. _test_results.txt: https://github.com/codecraftingtools/wumps/blob/master/test/test_results.txt
-.. _grammar.pg: https://github.com/codecraftingtools/wumps/blob/master/wumps/parglare/grammar.pg
-.. _parglare: https://github.com/igordejanovic/parglare
-.. _grammar documentation: http://www.igordejanovic.net/parglare/grammar_language/
-.. _install parglare: https://github.com/igordejanovic/parglare#installation
+.. _grammar.lark: https://github.com/codecraftingtools/wumps/blob/master/wumps/lark/grammar.lark
+.. _Lark grammar documentation: https://lark-parser.readthedocs.io/en/latest/grammar.html
+.. _Python 3: https://www.codecraftsmen.org/foundation.html#python
+.. _Lark: https://www.codecraftsmen.org/foundation.html#lark
+.. _virtualenvwrapper:
+      https://www.codecraftsmen.org/foundation.html#virtualenvwrapper
+.. _Git: https://www.codecraftsmen.org/foundation.html#git
