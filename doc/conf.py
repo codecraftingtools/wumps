@@ -20,8 +20,8 @@
 # -- Project information -----------------------------------------------------
 
 project = u'wumps'
-copyright = u'2018, 2020 Jeff Webb'
-author = u'Jeff Webb'
+copyright = u'2018, 2020 Jeffrey A. Webb'
+author = u'Jeffrey A. Webb'
 
 # The short X.Y version
 version = u''
