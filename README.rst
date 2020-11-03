@@ -38,19 +38,19 @@ Python package to operate.  Please set up a virtual Python environment
 using `virtualenvwrapper`_ and then follow the installation
 instructions for the `Lark`_ package.
 
-The Wumps source code can be pulled down from `GitHub`_ using this
-`Git`_ command::
+Make sure that `Git`_ is installed and then pull down the Wumps source
+code from `GitHub`_ using these commands::
 
+  mkdir -p ~/git
+  cd ~/git
   git clone https://github.com/codecraftingtools/wumps.git
 
-No futher installation is required.
-
-The ``hildegard`` application can
-be executed like this::
-
+This checkout of the Wumps repository can be installed in the
+`codecraftsmen` virtual environment like this::
+  
+  cd ~/git
   workon codecraftsmen
-  cd hildegard
-  ./scripts/hildegard
+  pip install -e wumps
 
 Running the Parser
 ==================
@@ -60,11 +60,11 @@ The parser can now be run like this:
 ::
 
   workon codecraftsmen
-  cd wumps
-  ./parse.py test/test_intro.wumps
+  cd ~/git/wumps
+  ./lark_parse.py --ast test/test_intro.wumps
 
 You can now make up your own source files using the Wumps syntax and
-try to parse them.
+parse them.
 
 .. _Code Craftsmen: https://www.codecraftsmen.org
 .. _documentation: https://wumps.readthedocs.io
