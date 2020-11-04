@@ -11,29 +11,31 @@ Where to Start
 ==============
 
 To get an idea of the language syntax, please see the
-`test_intro.wumps`_ file in the ``test`` subdirectory.  As you read
-over it, you can examine the resulting parse tree in
-`test_results.txt`_ to help understand how the language works.  The
-`grammar.lark`_ file may also be of interest.  The `Lark grammar
-documentation`_ describes the format of the grammar file.
+:repo:`test/test_intro.wumps` example file.  As you read over it, you
+can examine the resulting parse tree in :repo:`test/test_results.txt`
+to help understand how the language works.  The
+:repo:`wumps/lark/grammar.lark` file may also be of interest.  The
+`Lark grammar documentation`_ describes the format of the grammar
+file.
 
-Installation Notes
-==================
+Installation Instructions
+=========================
 
-The Wumps parser is written in `Python 3`_ and requires the `Lark`_
-Python package to operate.  Please set up a ``codecraftsmen`` virtual
-Python environment using `virtualenvwrapper`_ and then follow the
-`installation instructions for the Lark package <lark-install_>`_.
+The Wumps parser is written `Python 3 <cc:python>` and requires the
+`Lark <cc:lark>` Python package to operate.  Please set up a
+``codecraftsmen`` virtual Python environment using `virtualenvwrapper
+<cc:virtualenvwrapper-install>` and then follow the `installation
+instructions <cc:lark-install>` for the Lark package.
 
-Make sure that `Git`_ is installed and then pull down the Wumps source
-code from `GitHub`_ using these commands::
+Make sure that `Git <cc:git-install>` is installed and then pull down
+the Wumps source code from `GitHub <cc:github>` using these commands::
 
   mkdir -p ~/git
   cd ~/git
   git clone https://github.com/codecraftingtools/wumps.git
 
 This checkout of the Wumps repository can be installed in the
-`codecraftsmen` virtual environment like this::
+``codecraftsmen`` virtual environment like this::
   
   cd ~/git
   workon codecraftsmen
@@ -53,15 +55,5 @@ The parser can now be run like this:
 You can now make up your own source files using the Wumps syntax and
 parse them.
 
-.. _GitHub: https://www.codecraftsmen.org/foundation.html#github
-.. _test_intro.wumps: https://github.com/codecraftingtools/wumps/blob/master/test/test_intro.wumps
-.. _test_results.txt: https://github.com/codecraftingtools/wumps/blob/master/test/test_results.txt
-.. _grammar.lark: https://github.com/codecraftingtools/wumps/blob/master/wumps/lark/grammar.lark
-.. _Lark grammar documentation: https://lark-parser.readthedocs.io/en/latest/grammar.html
-.. _Python 3: https://www.codecraftsmen.org/foundation.html#python
-.. _Lark: https://www.codecraftsmen.org/foundation.html#lark
-.. _virtualenvwrapper:
-      https://www.codecraftsmen.org/virtualenvwrapper-notes.html#virtualenvwrapper-install
-.. _lark-install:
-      https://www.codecraftsmen.org/lark-notes.html#lark-install
-.. _Git: https://www.codecraftsmen.org/git-notes.html#git-install
+.. _Lark grammar documentation:
+   https://lark-parser.readthedocs.io/en/latest/grammar.html

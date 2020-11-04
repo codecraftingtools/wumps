@@ -40,6 +40,8 @@ release = u''
 # ones.
 extensions = [
     'sphinx.ext.githubpages',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.extlinks',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -69,6 +71,7 @@ exclude_patterns = [u'_build', 'Thumbs.db', '.DS_Store']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
 
+default_role = 'any'
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -175,3 +178,7 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+intersphinx_mapping = {'cc': ('https://www.codecraftsmen.org', None)}
+
+extlinks = {
+    'repo': ('https://github.com/codecraftingtools/wumps/blob/master/%s','')}
