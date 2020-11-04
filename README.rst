@@ -7,9 +7,9 @@ programming syntax suitable for defining domain-specific languages.
 The aim is to reduce the number of language keywords and built-in
 constructs in favor of user-defined functions and macros.
 
-Wumps is part of the `Code Craftsmen`_ project.  The `documentation`_
-is hosted on `Read the Docs`_ and the `source code`_ can be found on
-`GitHub`_.
+`Wumps`_ is part of the `Code Craftsmen`_ project.  The
+`documentation`_ is hosted on `Read the Docs`_ and the `source code`_
+can be found on `GitHub`_.
 
 Status
 ======
@@ -27,16 +27,16 @@ To get an idea of the language syntax, please see the
 `test_intro.wumps`_ file in the ``test`` subdirectory.  As you read
 over it, you can examine the resulting parse tree in
 `test_results.txt`_ to help understand how the language works.  The
-`grammar.lark`_ file will also be of interest.  The `Lark grammar
+`grammar.lark`_ file may also be of interest.  The `Lark grammar
 documentation`_ describes the format of the grammar file.
 
 Installation Notes
 ==================
 
 The Wumps parser is written in `Python 3`_ and requires the `Lark`_
-Python package to operate.  Please set up a virtual Python environment
-using `virtualenvwrapper`_ and then follow the installation
-instructions for the `Lark`_ package.
+Python package to operate.  Please set up a ``codecraftsmen`` virtual
+Python environment using `virtualenvwrapper`_ and then follow the
+`installation instructions for the Lark package <lark-install_>`_.
 
 Make sure that `Git`_ is installed and then pull down the Wumps source
 code from `GitHub`_ using these commands::
@@ -66,6 +66,7 @@ The parser can now be run like this:
 You can now make up your own source files using the Wumps syntax and
 parse them.
 
+.. _Wumps: https://www.codecraftsmen.org/software.html#wumps
 .. _Code Craftsmen: https://www.codecraftsmen.org
 .. _documentation: https://wumps.readthedocs.io
 .. _Read the Docs: https://www.codecraftsmen.org/foundation.html#read-the-docs
@@ -78,5 +79,7 @@ parse them.
 .. _Python 3: https://www.codecraftsmen.org/foundation.html#python
 .. _Lark: https://www.codecraftsmen.org/foundation.html#lark
 .. _virtualenvwrapper:
-      https://www.codecraftsmen.org/foundation.html#virtualenvwrapper
-.. _Git: https://www.codecraftsmen.org/foundation.html#git
+      https://www.codecraftsmen.org/virtualenvwrapper-notes.html#virtualenvwrapper-install
+.. _lark-install:
+      https://www.codecraftsmen.org/lark-notes.html#lark-install
+.. _Git: https://www.codecraftsmen.org/git-notes.html#git-install
