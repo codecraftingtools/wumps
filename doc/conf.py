@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'wumps'
+project = u'Wumps'
 copyright = u'2018, 2020 Jeffrey A. Webb'
 author = u'Jeffrey A. Webb'
 
@@ -105,7 +105,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'wumpsdoc'
+htmlhelp_basename = 'Wumpsdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -132,8 +132,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'wumps.tex', u'wumps Documentation',
-     u'Jeff Webb', 'manual'),
+    (master_doc, 'Wumps.tex', u'Wumps Documentation',
+     u'Jeffrey A. Webb', 'manual'),
 ]
 
 
@@ -142,7 +142,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'wumps', u'wumps Documentation',
+    (master_doc, 'wumps', u'Wumps Documentation',
      [author], 1)
 ]
 
@@ -153,8 +153,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'wumps', u'wumps Documentation',
-     author, 'wumps', 'One line description of project.',
+    (master_doc, 'Wumps', u'Wumps Documentation',
+     author, 'Wumps', 'One line description of project.',
      'Miscellaneous'),
 ]
 
