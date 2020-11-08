@@ -34,12 +34,16 @@ the Wumps source code from `GitHub <cc:github>` using these commands::
   cd ~/git
   git clone https://github.com/codecraftingtools/wumps.git
 
-This checkout of the Wumps repository can be installed in the
-``codecraftsmen`` virtual environment like this::
-  
-  cd ~/git
-  workon codecraftsmen
-  pip install -e wumps
+.. comment
+   
+  This checkout of the Wumps repository can be installed in the
+  ``codecraftsmen`` virtual environment like this::
+    
+    cd ~/git
+    workon codecraftsmen
+    pip install -e wumps
+
+No futher installation is required.
 
 Running the Parser
 ==================
