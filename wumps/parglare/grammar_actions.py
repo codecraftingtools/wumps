@@ -1,3 +1,5 @@
+# Copyright 2018, 2019, 2020 Jeffrey A. Webb
+
 """
 Actions to be taken when grammar patterns are recognized.
 """

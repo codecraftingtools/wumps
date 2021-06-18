@@ -1,3 +1,5 @@
+.. Copyright 2018, 2020 Jeffrey A. Webb
+
 Status
 ======
 

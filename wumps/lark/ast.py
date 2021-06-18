@@ -1,3 +1,5 @@
+# Copyright 2020 Jeffrey A. Webb
+
 """
 Abstract syntax tree nodes (lark extension).
 """

@@ -1,3 +1,5 @@
+# Copyright 2018, 2019 Jeffrey A. Webb
+
 """
 Side-effect actions to be taken when grammar patterns are recognized.
 """

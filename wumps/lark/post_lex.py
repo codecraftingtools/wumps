@@ -1,3 +1,5 @@
+# Copyright 2020 Jeffrey A. Webb
+
 """
 Lark Post-Lex Processor for Wumps.
 """

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Copyright 2019, 2020 Jeffrey A. Webb
+
 # Add the project root directory to sys.path
 import sys
 from pathlib import Path

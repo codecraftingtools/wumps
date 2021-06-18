@@ -1,3 +1,5 @@
+# Copyright 2018, 2019 Jeffrey A. Webb
+
 """
 Utility routines used in multiple source files.
 """

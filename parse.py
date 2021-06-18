@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Copyright 2017, 2018, 2019 Jeffrey A. Webb
+
 """
 Parse input files and print the AST.
 """
