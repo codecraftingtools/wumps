@@ -1,24 +1,8 @@
-.. Copyright 2018, 2020 Jeffrey A. Webb
+.. Copyright 2018, 2020, 2021 Jeffrey A. Webb
 
-Status
-======
-
-At this point, the grammar is fairly complete and the parser is able
-to parse source files and build an abstract syntax tree.  Although the
-ideas encompassed by this project have been developing for quite a
-while, the code base is fairly new.  As one might expect, the current
-documentation is sparse, but this will hopefully improve over time.
-
-Where to Start
-==============
-
-To get an idea of the language syntax, please see the
-:repo:`test/test_intro.wumps` example file.  As you read over it, you
-can examine the resulting parse tree in :repo:`test/test_results.txt`
-to help understand how the language works.  The
-:repo:`wumps/lark/grammar.lark` file may also be of interest.  The
-`Lark grammar documentation`_ describes the format of the grammar
-file.
+===============
+Getting Started
+===============
 
 Installation Instructions
 =========================
@@ -58,8 +42,5 @@ The parser can now be run like this:
   cd ~/git/wumps
   ./lark_parse.py --ast test/test_intro.wumps
 
-You can now make up your own source files using the Wumps syntax and
-parse them.
+where ``test/test_intro.wumps`` is the Wumps-formatted input file to be processed.
 
-.. _Lark grammar documentation:
-   https://lark-parser.readthedocs.io/en/latest/grammar.html

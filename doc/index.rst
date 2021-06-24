@@ -1,4 +1,4 @@
-.. Copyright 2018, 2020 Jeffrey A. Webb
+.. Copyright 2018, 2020, 2021 Jeffrey A. Webb
 
 .. Wumps documentation master file, created by
    sphinx-quickstart on Fri Nov  9 20:23:42 2018.
@@ -14,4 +14,7 @@
    :maxdepth: 2
    :caption: Contents:
 
-   main
+   status
+   getting_started
+   introduction
+
