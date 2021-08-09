@@ -40,7 +40,7 @@ The parser can now be run like this:
 
   workon codecraftsmen
   cd ~/git/wumps
-  ./lark_parse.py --ast test/test_intro.wumps
+  ./wumps.py --ast test/test_intro.wumps
 
 where ``test/test_intro.wumps`` is the Wumps-formatted input file to be processed.
 

@@ -1,4 +1,4 @@
---- Parse Tree for "test/test_intro.wumps" ---
+--- Abstract Syntax Tree for "test/test_intro.wumps" ---
 File
   path: "test/test_intro.wumps"
   elements:
@@ -673,7 +673,8 @@ File
                     elements:
                       Identifier
                         text: "seconds"
---- Parse Tree for "test/test_numbers.wumps" ---
+
+--- Abstract Syntax Tree for "test/test_numbers.wumps" ---
 File
   path: "test/test_numbers.wumps"
   elements:
@@ -716,7 +717,8 @@ File
             value: 8
           Integer
             value: -8
---- Parse Tree for "test/test_strings.wumps" ---
+
+--- Abstract Syntax Tree for "test/test_strings.wumps" ---
 File
   path: "test/test_strings.wumps"
   elements:
@@ -737,7 +739,8 @@ File
             text: "block string 1a\n block string 1b\n block string 1c"
     Identifier
       text: "1 \"complex\" 'identifier'"
---- Parse Tree for "test/test_structure.wumps" ---
+
+--- Abstract Syntax Tree for "test/test_structure.wumps" ---
 File
   path: "test/test_structure.wumps"
   elements:
@@ -1062,3 +1065,4 @@ File
                         text: "e"
                       Identifier
                         text: "f"
+
