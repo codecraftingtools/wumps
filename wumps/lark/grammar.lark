@@ -8,8 +8,6 @@ file: \
 _expressions: \
     _primary_delimiter* _expression?
   | _expressions _primary_delimiter _expressions
-_primary_delimiters: \
-    _primary_delimiter+
 _primary_delimiter: \
     _UNBRACKETED_ALIGNED_INDENT_OUTSIDE_CONTINUATION
   | _SEMICOLON

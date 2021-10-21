@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2019, 2020 Jeffrey A. Webb
+# Copyright 2019, 2020, 2021 Jeffrey A. Webb
 
 # Add the project root directory to sys.path
 import sys
@@ -37,7 +37,7 @@ def create_arg_parser():
         action = "store_true",
         help = "print the output of the lexer before post-lexing and parsing")
     arg_parser.add_argument(
-        "--post-lex-unfiltered",
+        "--unfiltered-post-lex",
         action = "store_true",
         help = "print the output of the post-lexer before filtering and "
         "parsing")
@@ -54,49 +54,54 @@ def create_arg_parser():
         action = "store_true",
         help = "print the abstract syntax tree")
     arg_parser.add_argument(
-        "--debug",
+        "--debug-parser",
         action = "store_true",
-        help = "debug parser")
+        help = "debug lark parser")
     return arg_parser
+
+def create_lark_parser(grammar, args, filter_post_lex=True):
+    parser = Lark(grammar,
+                  start="file",
+                  parser=args.parser,
+                  lexer=args.lexer,
+                  postlex=post_lex.Post_Lex_Processor_and_Filter(
+                      filter=filter_post_lex),
+                  #ambiguity="explicit",
+                  debug=args.debug_parser,
+                  propagate_positions=True,
+                  )
+    return parser
 
 def main():
     arg_parser = create_arg_parser()
     args = arg_parser.parse_args()
 
-    grammar = open(grammar_file).read()
-    grammar = grammar.replace("\\\n", "")
-    parser = Lark(grammar,
-                  start=["file", "unused_terminals"],
-                  parser=args.parser,
-                  lexer=args.lexer,
-                  postlex=post_lex.Post_Lex_Processor_and_Filter(
-                      args.post_lex_unfiltered),
-                  #ambiguity="explicit",
-                  debug=args.debug,
-                  propagate_positions=True,
-                  )
+    multi_line_grammar = open(grammar_file).read()
+    grammar = multi_line_grammar.replace("\\\n", "")
+    
+    parser = create_lark_parser(grammar, args)
+    unfiltered_post_lex_parser = create_lark_parser(
+        grammar, args, filter_post_lex=False)
 
-    # Process each file specified on the command line.
     for file_name in args.filenames:
         text = open(file_name).read()
         if args.lex:
             generator = parser._build_lexer().lex(text)
-            print(f'--- Lexer output for "{file_name}" ---')
+            print(f'--- Lexer Output for "{file_name}" ---')
             post_lex.print_lex(generator)
             print()
-        if args.post_lex_unfiltered:
-            generator = parser.lex(text)
-            print(f'--- Unfiltered post-Lexer output for "{file_name}" ---')
+        if args.unfiltered_post_lex:
+            generator = unfiltered_post_lex_parser.lex(text)
+            print(f'--- Unfiltered Post-Lexer Output for "{file_name}" ---')
             post_lex.print_lex(generator)
             print()
-            continue # Cannot parse with unfiltered post-lex output
         if args.post_lex:
             generator = parser.lex(text)
-            print(f'--- Post-Lexer output for "{file_name}" ---')
+            print(f'--- Post-Lexer Output for "{file_name}" ---')
             post_lex.print_lex(generator)
             print()
         if args.parse or args.ast:
-            tree = parser.parse(text, start="file")
+            tree = parser.parse(text)
         if args.parse:
             print(f'--- Parse Tree for "{file_name}" ---')
             print(tree.pretty(),end="")
@@ -106,9 +111,6 @@ def main():
             a_tree = ast.build_ast(tree, file_name=file_name)
             print(a_tree.get_ast_str(),end="")
             print()
-            
-        #for item in tree.children:
-        #    print(type(item))
             
 if __name__ == "__main__":
     main()

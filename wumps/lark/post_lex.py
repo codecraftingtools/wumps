@@ -1,4 +1,4 @@
-# Copyright 2020 Jeffrey A. Webb
+# Copyright 2020, 2021 Jeffrey A. Webb
 
 """
 Lark Post-Lex Processor for Wumps.
@@ -157,8 +157,8 @@ class Post_Lex_Processor:
 class Post_Lex_Processor_and_Filter:
     always_accept = Post_Lex_Processor.always_accept
 
-    def __init__(self, unfiltered=False):
-        self._unfiltered = unfiltered
+    def __init__(self, filter=True):
+        self._filter = filter
         
     def process(self, stream):
         generator = Post_Lex_Processor().process(stream)
@@ -171,7 +171,7 @@ class Post_Lex_Processor_and_Filter:
                     "UNBRACKETED_CONTINUATION_MARKER",
                     "UNBRACKETED_INCREASED_INDENT_AFTER_CONTINUATION_MARKER",
                     "UNBRACKETED_DECREASED_INDENT_INSIDE_CONTINUATION",
-            ] and not self._unfiltered:
+            ] and self._filter:
                 continue
             else:
                 yield token
