@@ -262,7 +262,8 @@ File
           Named_Expression
             name: Identifier
               text: "key3"
-            expression: Nothing
+            expression: Identifier
+              text: "value3"
           Named_Expression
             name: Identifier
               text: "key4"
