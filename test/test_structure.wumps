@@ -1,4 +1,5 @@
 -- Copyright 2018 Jeffrey A. Webb
+-- Copyright 2021 NTA, Inc.
 
 -- Example input file for testing the grammar parser (structure).
 
@@ -47,7 +48,7 @@ if a7 ...
        i7
      else:
        j7
-a . b
-a.b c
-a b.c
-a.b.c d.e.f
+a.b
+--a.b c
+--a b.c
+--a.b.c d.e.f
