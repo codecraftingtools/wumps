@@ -1,4 +1,5 @@
 # Copyright 2020 Jeffrey A. Webb
+# Copyright 2021 NTA, Inc.
 
 """
 Abstract syntax tree nodes (lark extension).
@@ -71,11 +72,6 @@ def build_ast(parse_tree_node, file_name=None):
     return ast_node
 
 def fix_up_identifier(node):
-    # The trailing colon for keys is an artifact of the way the
-    # grammar is defined and needs to be removed.
-    if node.endswith(':'):
-        node = node[:-1].rstrip()
-
     # Complex identifiers need special handling.
     if node.startswith("'"):
         # Strip quotes and remove escape sequences.
