@@ -97,23 +97,6 @@ File
             text: "arg1"
     Call
       callee: Identifier
-        text: "f1"
-      arguments: Sequence
-        elements:
-          Call
-            callee: Identifier
-              text: "f2"
-            arguments: Sequence
-              elements:
-                Call
-                  callee: Identifier
-                    text: "f3"
-                  arguments: Sequence
-                    elements:
-                      Identifier
-                        text: "argf3"
-    Call
-      callee: Identifier
         text: "f4"
       arguments: Sequence
         elements:
@@ -269,104 +252,6 @@ File
               text: "key4"
             expression: Identifier
               text: "value4"
-    Call
-      callee: Identifier
-        text: "f9"
-      arguments: Sequence
-        elements:
-          Call
-            callee: Identifier
-              text: "pos1"
-            arguments: Sequence
-              elements:
-                Identifier
-                  text: "notpos2"
-          Named_Expression
-            name: Identifier
-              text: "key1"
-            expression: Identifier
-              text: "value1"
-          Named_Expression
-            name: Identifier
-              text: "key2"
-            expression: Identifier
-              text: "value2"
-    Call
-      callee: Identifier
-        text: "f9"
-      arguments: Sequence
-        elements:
-          Call
-            callee: Identifier
-              text: "pos1"
-            arguments: Sequence
-              elements:
-                Identifier
-                  text: "notpos2"
-          Named_Expression
-            name: Identifier
-              text: "key1"
-            expression: Identifier
-              text: "value1"
-          Named_Expression
-            name: Identifier
-              text: "key2"
-            expression: Identifier
-              text: "value2"
-    Call
-      callee: Identifier
-        text: "fa"
-      arguments: Sequence
-        elements:
-          Call
-            callee: Identifier
-              text: "fb"
-            arguments: Sequence
-              elements:
-                Identifier
-                  text: "c"
-          Named_Expression
-            name: Identifier
-              text: "key1"
-            expression: Call
-              callee: Identifier
-                text: "innerfa"
-              arguments: Sequence
-                elements:
-                  Identifier
-                    text: "arg_innerfa"
-          Named_Expression
-            name: Identifier
-              text: "key2"
-            expression: Identifier
-              text: "value2"
-    Call
-      callee: Identifier
-        text: "fa"
-      arguments: Sequence
-        elements:
-          Call
-            callee: Identifier
-              text: "fb"
-            arguments: Sequence
-              elements:
-                Identifier
-                  text: "c"
-          Named_Expression
-            name: Identifier
-              text: "key1"
-            expression: Call
-              callee: Identifier
-                text: "innerfa"
-              arguments: Sequence
-                elements:
-                  Identifier
-                    text: "arg_innerfa"
-          Named_Expression
-            name: Identifier
-              text: "key2"
-            expression: Identifier
-              text: "value2"
     Call
       callee: Identifier
         text: "fn1"
@@ -806,48 +691,28 @@ File
         text: "if"
       arguments: Sequence
         elements:
-          Call
-            callee: Identifier
-              text: "a4"
-            arguments: Sequence
-              elements:
-                Call
-                  callee: Identifier
-                    text: "b4"
-                  arguments: Sequence
-                    elements:
-                      Call
-                        callee: Identifier
-                          text: "c4"
-                        arguments: Sequence
-                          elements:
-                            Call
-                              callee: Identifier
-                                text: "d4"
-                              arguments: Sequence
-                                elements:
-                                  Call
-                                    callee: Identifier
-                                      text: "e4"
-                                    arguments: Sequence
-                                      elements:
-                                        Call
-                                          callee: Identifier
-                                            text: "f4"
-                                          arguments: Sequence
-                                            elements:
-                                              Call
-                                                callee: Identifier
-                                                  text: "g4"
-                                                arguments: Sequence
-                                                  elements:
-                                                    Call
-                                                      callee: Identifier
-                                                        text: "h4"
-                                                      arguments: Sequence
-                                                        elements:
-                                                          Identifier
-                                                            text: "i4"
+          Identifier
+            text: "a4"
+          Named_Expression
+            name: Identifier
+              text: "b4"
+            expression: Identifier
+              text: "c4"
+          Named_Expression
+            name: Identifier
+              text: "d4"
+            expression: Identifier
+              text: "e4"
+          Named_Expression
+            name: Identifier
+              text: "f4"
+            expression: Identifier
+              text: "g4"
+          Named_Expression
+            name: Identifier
+              text: "h4"
+            expression: Identifier
+              text: "i4"
           Named_Expression
             name: Identifier
               text: "then"
@@ -873,25 +738,20 @@ File
         text: "if"
       arguments: Sequence
         elements:
-          Call
-            callee: Identifier
-              text: "a5"
-            arguments: Sequence
-              elements:
-                Call
-                  callee: Identifier
-                    text: "b5"
-                  arguments: Sequence
-                    elements:
-                      Call
-                        callee: Identifier
-                          text: "c5"
-                        arguments: Sequence
-                          elements:
-                            Identifier
-                              text: "d5"
-                            Identifier
-                              text: "e5"
+          Identifier
+            text: "a5"
+          Named_Expression
+            name: Identifier
+              text: "b5"
+            expression: Named_Expression
+              name: Identifier
+                text: "c5"
+              expression: Sequence
+                elements:
+                  Identifier
+                    text: "d5"
+                  Identifier
+                    text: "e5"
           Named_Expression
             name: Identifier
               text: "else"
@@ -904,28 +764,18 @@ File
         text: "if"
       arguments: Sequence
         elements:
-          Call
-            callee: Identifier
-              text: "a6"
-            arguments: Sequence
-              elements:
-                Call
-                  callee: Identifier
-                    text: "b6"
-                  arguments: Sequence
-                    elements:
-                      Call
-                        callee: Identifier
-                          text: "c6"
-                        arguments: Sequence
-                          elements:
-                            Call
-                              callee: Identifier
-                                text: "d6"
-                              arguments: Sequence
-                                elements:
-                                  Identifier
-                                    text: "e6"
+          Identifier
+            text: "a6"
+          Named_Expression
+            name: Identifier
+              text: "b6"
+            expression: Identifier
+              text: "c6"
+          Named_Expression
+            name: Identifier
+              text: "d6"
+            expression: Identifier
+              text: "e6"
           Named_Expression
             name: Identifier
               text: "else"
@@ -936,57 +786,40 @@ File
                     text: "f6"
                   arguments: Sequence
                     elements:
-                      Call
-                        callee: Identifier
+                      Named_Expression
+                        name: Identifier
                           text: "g6"
-                        arguments: Sequence
-                          elements:
-                            Identifier
-                              text: "h6"
+                        expression: Identifier
+                          text: "h6"
     Call
       callee: Identifier
         text: "if"
       arguments: Sequence
         elements:
-          Call
-            callee: Identifier
-              text: "a7"
-            arguments: Sequence
-              elements:
-                Call
-                  callee: Identifier
-                    text: "b7"
-                  arguments: Sequence
-                    elements:
-                      Call
-                        callee: Identifier
-                          text: "c7"
-                        arguments: Sequence
-                          elements:
-                            Call
-                              callee: Identifier
-                                text: "d7"
-                              arguments: Sequence
-                                elements:
-                                  Call
-                                    callee: Identifier
-                                      text: "e7"
-                                    arguments: Sequence
-                                      elements:
-                                        Call
-                                          callee: Identifier
-                                            text: "f7"
-                                          arguments: Sequence
-                                            elements:
-                                              Call
-                                                callee: Identifier
-                                                  text: "g7"
-                                                arguments: Sequence
-                                                  elements:
-                                                    Identifier
-                                                      text: "h7"
-                                                    Identifier
-                                                      text: "i7"
+          Identifier
+            text: "a7"
+          Named_Expression
+            name: Identifier
+              text: "b7"
+            expression: Identifier
+              text: "c7"
+          Named_Expression
+            name: Identifier
+              text: "d7"
+            expression: Identifier
+              text: "e7"
+          Named_Expression
+            name: Identifier
+              text: "f7"
+            expression: Named_Expression
+              name: Identifier
+                text: "g7"
+              expression: Sequence
+                elements:
+                  Identifier
+                    text: "h7"
+                  Identifier
+                    text: "i7"
           Named_Expression
             name: Identifier
               text: "else"
