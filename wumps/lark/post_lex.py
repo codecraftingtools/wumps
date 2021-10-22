@@ -1,4 +1,5 @@
 # Copyright 2020, 2021 Jeffrey A. Webb
+# Copyright 2021 NTA, Inc.
 
 """
 Lark Post-Lex Processor for Wumps.
@@ -138,9 +139,6 @@ class Post_Lex_Processor:
             elif token.type == "NEWLINE_AND_MAYBE_INDENT":
                 for t in self.handle_newline_and_maybe_indent(token):
                     yield t
-            elif token.type == "KEY":
-                # Strip colon from end of key
-                yield Token.new_borrow_pos("KEY", token[:-1], token)
             else:
                 yield token
         while self.context.current_indent() > 0:

@@ -52,8 +52,7 @@ def build_ast(parse_tree_node, file_name=None):
     elif isinstance(parse_tree_node, lark.Token):
         t = parse_tree_node
         if (t.type == "SIMPLE_IDENTIFIER" or
-            t.type == "COMPLEX_IDENTIFIER" or
-            t.type == "KEY"):
+            t.type == "COMPLEX_IDENTIFIER"):
             ast_node = wumps.ast.Identifier(fix_up_identifier(t))
         elif (t.type == "HEXADECIMAL_INTEGER" or
               t.type == "OCTAL_INTEGER" or
