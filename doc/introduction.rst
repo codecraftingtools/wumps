@@ -146,13 +146,6 @@ Calls with a single argument can be written like this.
    :lineno-start: 67
    :lines: 67
 
-Calls can be chained.
-
-.. literalinclude:: ../test/test_intro.wumps
-   :linenos:
-   :lineno-start: 70
-   :lines: 70
-
 Multiple arguments can be passed as a sequence.
 
 .. literalinclude:: ../test/test_intro.wumps
@@ -219,34 +212,6 @@ using parentheses.
    :linenos:
    :lineno-start: 101
    :lines: 101
-
-Trying to pass any more would result in nesting.
-
-.. literalinclude:: ../test/test_intro.wumps
-   :linenos:
-   :lineno-start: 104
-   :lines: 104
-
-The above expression is equivalent to this one:
-
-.. literalinclude:: ../test/test_intro.wumps
-   :linenos:
-   :lineno-start: 107
-   :lines: 107
-
-The key is to remember that keywords go with the outermost call.
-
-.. literalinclude:: ../test/test_intro.wumps
-   :linenos:
-   :lineno-start: 110
-   :lines: 110
-
-The above expression is equivalent to this one:
-
-.. literalinclude:: ../test/test_intro.wumps
-   :linenos:
-   :lineno-start: 113
-   :lines: 113
 
 Some of the expressions above are not easy to understand, so don't write
 things like that just because you can.  Hang in there and you will hopefully

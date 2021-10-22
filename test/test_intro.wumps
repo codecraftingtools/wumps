@@ -66,8 +66,8 @@ name6: (e6a, e6b)
 -- Calls with a single argument can be written like this.
 f1 arg1
 
--- Calls can be chained.
-f1 f2 f3 argf3
+
+
 
 -- Multiple arguments can be passed as a sequence.
 f4(arg1, arg2, arg3)
@@ -100,17 +100,17 @@ f7(key1: value1, key2: value2)
 -- using parentheses.
 f8 pos1 key1: value1 key2: value2 key3: value3 key4: value4
 
--- Trying to pass any more would result in nesting.
-f9 pos1 notpos2 key1: value1 key2: value2
 
--- The above expression is equivalent to this.
-f9(pos1(notpos2), key1: value1, key2: value2)
 
--- The key is to remember that keywords go with the outermost call.
-fa fb c key1: innerfa arg_innerfa key2: value2
 
--- The above expression is equivalent to this:
-fa(fb(c), key1: innerfa(arg_innerfa), key2: value2)
+
+
+
+
+
+
+
+
 
 -- Some of the expressions above are not easy to understand, so don't write
 -- things like that just because you can.  Hang in there and you will hopefully
@@ -140,7 +140,7 @@ fn2(fn2a(arg2a), arg2, key1: value1)
 
 -- This allows us to build flow-control constructs using a function call syntax
 -- without any language keywords.
-if greater(arg1, arg2) ...
+if (greater(arg1, arg2)) ...
   then:
     do_this(arg1)
     do_that(arg2)
