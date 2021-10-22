@@ -1,4 +1,5 @@
 // Copyright 2018, 2019, 2020, 2021 Jeffrey A. Webb
+// Copyright 2021 NTA, Inc.
 
 // Grammar definition
 
@@ -73,7 +74,7 @@ _callee: \
     _term
 named_argument: \
     KEY _argument
-  | KEY
+  | KEY named_argument
 _argument: \
     _term
   | chained_call
