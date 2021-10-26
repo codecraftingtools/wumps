@@ -9,8 +9,10 @@ from lark.lexer import Token
 from wumps.context import Context
 
 class Post_Lex_Processor:
-    open_bracket_types  = ["_OPEN_BRACE", "_OPEN_PARENTHESIS"]
-    close_bracket_types = ["_CLOSE_BRACE", "_CLOSE_PARENTHESIS"]
+    open_bracket_types  = ["_OPEN_BRACE", "_OPEN_PARENTHESIS",
+                           "_OPEN_SQUARE_BRACKET"]
+    close_bracket_types = ["_CLOSE_BRACE", "_CLOSE_PARENTHESIS",
+                           "_CLOSE_SQUARE_BRACKET"]
     def __init__(self):
         self.context = Context()
         

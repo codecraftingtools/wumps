@@ -38,6 +38,7 @@ _non_identifier_term: \
     _parenthesized_expression
   | empty_parentheses
   | braced_block
+  | square_bracketed_expression
   | unbracketed_indented_block_without_continuation_marker
   | binary_operation
   | _string
@@ -49,6 +50,8 @@ empty_parentheses: \
     _OPEN_PARENTHESIS _CLOSE_PARENTHESIS
 braced_block: \
     _OPEN_BRACE _expressions _CLOSE_BRACE
+square_bracketed_expression: \
+    _OPEN_SQUARE_BRACKET _expression _CLOSE_SQUARE_BRACKET -> sequence
 unbracketed_indented_block_without_continuation_marker: \
     _UNBRACKETED_INCREASED_INDENT_WITHOUT_CONTINUATION_MARKER \
     _expressions \
@@ -113,6 +116,8 @@ _OPEN_PARENTHESIS: "("
 _CLOSE_PARENTHESIS: ")"
 _OPEN_BRACE: "{"
 _CLOSE_BRACE: "}"
+_OPEN_SQUARE_BRACKET: "["
+_CLOSE_SQUARE_BRACKET: "]"
 SIMPLE_IDENTIFIER: /[a-zA-Z_]+[a-zA-Z0-9_]*/
 COMPLEX_IDENTIFIER: /'(.*?)(?<!\\)'/
 SIMPLE_STRING: /"(.*?)(?<!\\)"/
