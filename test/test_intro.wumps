@@ -169,7 +169,7 @@ if (done) then: {
     do_thing1() } else: {do_other1(); 
   do_other2()}
 
--- We have just been using literals so far, but native types like integers,
+-- We have just been using identifiers so far, but native types like integers,
 -- floats, and strings are also supported.
 0xff, 0x10, 10_000, +2.3e3, -0.000_001, "string"
 
