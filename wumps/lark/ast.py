@@ -66,6 +66,18 @@ def build_ast(parse_tree_node, file_name=None):
             ast_node = wumps.ast.String(fix_up_string(t))
         elif t.type == "MEMBER_OPERATOR":
             ast_node = wumps.ast.Operator(t)
+        elif t.type == "RANGE_OPERATOR":
+            ast_node = wumps.ast.Operator(t)
+        elif t.type == "EXPONENTIATION_OPERATOR":
+            ast_node = wumps.ast.Operator(t)
+        elif t.type == "ADDITION_OPERATOR":
+            ast_node = wumps.ast.Operator(t)
+        elif t.type == "SUBRACTION_OPERATOR":
+            ast_node = wumps.ast.Operator(t)
+        elif t.type == "MULTIPLICATION_OPERATOR":
+            ast_node = wumps.ast.Operator(t)
+        elif t.type == "DIVISION_OPERATOR":
+            ast_node = wumps.ast.Operator(t)
         else:
             raise Exception(f"unknown token type: {t.type}")
     return ast_node

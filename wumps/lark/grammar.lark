@@ -60,6 +60,12 @@ binary_operation: \
     _term _binary_operator _term
 _binary_operator: \
     MEMBER_OPERATOR
+  | RANGE_OPERATOR
+  | EXPONENTIATION_OPERATOR
+  | ADDITION_OPERATOR
+  | SUBTRACTION_OPERATOR
+  | MULTIPLICATION_OPERATOR
+  | DIVISION_OPERATOR
 _identifier: \
     SIMPLE_IDENTIFIER
   | COMPLEX_IDENTIFIER
@@ -129,7 +135,13 @@ HEXADECIMAL_INTEGER: /[-+]?0[xX][0-9a-fA-F_]+/
 BINARY_INTEGER: /[-+]?0[bB][01_]+/
 OCTAL_INTEGER: /[-+]?0[oO][0-7_]+/
 FLOAT: /[-+]?([0-9_]+\.[0-9_]*([eE]-?\d+)?(?!\.)|[0-9_]+([eE]-?\d+)|\.[0-9_]+([eE]-?\d+)?)/
+RANGE_OPERATOR: ".."
 MEMBER_OPERATOR: "."
+EXPONENTIATION_OPERATOR: "^"
+ADDITION_OPERATOR: "+"
+SUBTRACTION_OPERATOR: "-"
+MULTIPLICATION_OPERATOR: "*"
+DIVISION_OPERATOR: "/"
 
 // Discardable terminals
 BLANK_LINE: /\n *(?=\n)/
