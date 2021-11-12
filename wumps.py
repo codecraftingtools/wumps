@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Copyright 2019, 2020, 2021 Jeffrey A. Webb
+# Copyright 2021 NTA, Inc.
 
 # Add the project root directory to sys.path
 import sys
