@@ -1,4 +1,4 @@
---- Abstract Syntax Tree for "test/test_intro.wumps" ---
+--- Abstract Syntax Tree for "test/test_intro.wumps"
 File
   path: "test/test_intro.wumps"
   elements:
@@ -560,7 +560,7 @@ File
                       Identifier
                         text: "seconds"
 
---- Abstract Syntax Tree for "test/test_numbers.wumps" ---
+--- Abstract Syntax Tree for "test/test_numbers.wumps"
 File
   path: "test/test_numbers.wumps"
   elements:
@@ -604,7 +604,7 @@ File
           Integer
             value: -8
 
---- Abstract Syntax Tree for "test/test_strings.wumps" ---
+--- Abstract Syntax Tree for "test/test_strings.wumps"
 File
   path: "test/test_strings.wumps"
   elements:
@@ -626,7 +626,7 @@ File
     Identifier
       text: "1 \"complex\" 'identifier'"
 
---- Abstract Syntax Tree for "test/test_structure.wumps" ---
+--- Abstract Syntax Tree for "test/test_structure.wumps"
 File
   path: "test/test_structure.wumps"
   elements:

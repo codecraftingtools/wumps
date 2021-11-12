@@ -33,6 +33,10 @@ def create_arg_parser():
         help = "specify the lexer to use (contextual only works with lalr "
         "parser")
     arg_parser.add_argument(
+        "--list-files",
+        action = "store_true",
+        help = "list the names of the files being processed, in order")
+    arg_parser.add_argument(
         "--lex",
         action = "store_true",
         help = "print the output of the lexer before post-lexing and parsing")
@@ -84,33 +88,54 @@ def main():
         grammar, args, filter_post_lex=False)
 
     for file_name in args.filenames:
-        text = open(file_name).read()
-        if args.lex:
-            generator = parser._build_lexer().lex(text)
-            print(f'--- Lexer Output for "{file_name}" ---')
-            post_lex.print_lex(generator)
-            print()
-        if args.unfiltered_post_lex:
-            generator = unfiltered_post_lex_parser.lex(text)
-            print(f'--- Unfiltered Post-Lexer Output for "{file_name}" ---')
-            post_lex.print_lex(generator)
-            print()
-        if args.post_lex:
-            generator = parser.lex(text)
-            print(f'--- Post-Lexer Output for "{file_name}" ---')
-            post_lex.print_lex(generator)
-            print()
-        if args.parse or args.ast:
-            tree = parser.parse(text)
-        if args.parse:
-            print(f'--- Parse Tree for "{file_name}" ---')
-            print(tree.pretty(),end="")
-            print()
-        if args.ast:
-            print(f'--- Abstract Syntax Tree for "{file_name}" ---')
-            a_tree = ast.build_ast(tree, file_name=file_name)
-            print(a_tree.get_ast_str(),end="")
-            print()
+        parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser)
+        
+def parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser):
+    file_path = Path(file_name)
+    if file_path.is_dir():
+        subdirs = []
+        subpaths = file_path.iterdir()
+        for subpath in sorted(subpaths):
+            if subpath.is_dir():
+                subdirs.append(subpath)
+            else:
+                parse_file(subpath, args, parser, unfiltered_post_lex_parser)
+        for subdir in subdirs:
+            parse_file_or_dir(
+                subdir, args, parser, unfiltered_post_lex_parser)
+    else:
+        parse_file(file_name, args, parser, unfiltered_post_lex_parser)
+        
+def parse_file(file_name, args, parser, unfiltered_post_lex_parser):
+    text = open(file_name).read()
+    if args.list_files:
+        print(f'--- Processing "{file_name}"')
+    if args.lex:
+        generator = parser._build_lexer().lex(text)
+        print(f'--- Lexer Output for "{file_name}"')
+        post_lex.print_lex(generator)
+        print()
+    if args.unfiltered_post_lex:
+        generator = unfiltered_post_lex_parser.lex(text)
+        print(f'--- Unfiltered Post-Lexer Output for "{file_name}"')
+        post_lex.print_lex(generator)
+        print()
+    if args.post_lex:
+        generator = parser.lex(text)
+        print(f'--- Post-Lexer Output for "{file_name}"')
+        post_lex.print_lex(generator)
+        print()
+    if args.parse or args.ast:
+        tree = parser.parse(text)
+    if args.parse:
+        print(f'--- Parse Tree for "{file_name}"')
+        print(tree.pretty(),end="")
+        print()
+    if args.ast:
+        print(f'--- Abstract Syntax Tree for "{file_name}"')
+        a_tree = ast.build_ast(tree, file_name=file_name)
+        print(a_tree.get_ast_str(),end="")
+        print()
             
 if __name__ == "__main__":
     main()
