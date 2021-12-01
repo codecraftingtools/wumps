@@ -29,8 +29,8 @@ def create_arg_parser():
         help = "specify the parsing algorithm to use")
     arg_parser.add_argument(
         "--lexer",
-        default = "standard",
-        choices = ["standard", "contextual"],
+        default = "basic",
+        choices = ["basic", "contextual"],
         help = "specify the lexer to use (contextual only works with lalr "
         "parser")
     arg_parser.add_argument(
