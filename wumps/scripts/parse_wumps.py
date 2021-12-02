@@ -17,7 +17,6 @@ from wumps.lark import post_lex, ast
 import wumps
 
 wumps_package_root = Path(wumps.__file__).parent
-grammar_file = str(wumps_package_root / "lark" / "grammar.lark")
 
 def create_arg_parser():
     arg_parser = argparse.ArgumentParser(
@@ -68,7 +67,10 @@ def create_arg_parser():
         help = "debug lark parser")
     return arg_parser
 
-def create_lark_parser(grammar, args, filter_post_lex=True):
+def create_lark_parser(args, filter_post_lex=True):
+    grammar_file = str(wumps_package_root / "lark" / "grammar.lark")
+    multi_line_grammar = open(grammar_file).read()
+    grammar = multi_line_grammar.replace("\\\n", "")
     parser = Lark(grammar,
                   start="file",
                   parser=args.parser,
@@ -85,14 +87,13 @@ def main():
     arg_parser = create_arg_parser()
     args = arg_parser.parse_args()
 
-    multi_line_grammar = open(grammar_file).read()
-    grammar = multi_line_grammar.replace("\\\n", "")
-    
-    parser = create_lark_parser(grammar, args)
+    parser = create_lark_parser(args)
     unfiltered_post_lex_parser = create_lark_parser(
-        grammar, args, filter_post_lex=False)
+        args, filter_post_lex=False)
+    parse_files_and_dirs(args.filenames, args, parser, unfiltered_post_lex_parser)
 
-    for file_name in args.filenames:
+def parse_files_and_dirs(file_names, args, parser, unfiltered_post_lex_parser):
+    for file_name in file_names:
         parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser)
         
 def parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser):
