@@ -83,20 +83,11 @@ def create_lark_parser(args, filter_post_lex=True):
                   )
     return parser
 
-def main():
-    arg_parser = create_arg_parser()
-    args = arg_parser.parse_args()
-
-    parser = create_lark_parser(args)
-    unfiltered_post_lex_parser = create_lark_parser(
-        args, filter_post_lex=False)
-    parse_files_and_dirs(args.filenames, args, parser, unfiltered_post_lex_parser)
-
-def parse_files_and_dirs(file_names, args, parser, unfiltered_post_lex_parser):
+def process_files_and_dirs(file_names, args, parser, unfiltered_post_lex_parser):
     for file_name in file_names:
-        parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser)
+        process_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser)
         
-def parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser):
+def process_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser):
     file_path = Path(file_name)
     if file_path.is_dir():
         subdirs = []
@@ -105,14 +96,14 @@ def parse_file_or_dir(file_name, args, parser, unfiltered_post_lex_parser):
             if subpath.is_dir():
                 subdirs.append(subpath)
             else:
-                parse_file(subpath, args, parser, unfiltered_post_lex_parser)
+                process_file(subpath, args, parser, unfiltered_post_lex_parser)
         for subdir in subdirs:
-            parse_file_or_dir(
+            process_file_or_dir(
                 subdir, args, parser, unfiltered_post_lex_parser)
     else:
-        parse_file(file_name, args, parser, unfiltered_post_lex_parser)
+        process_file(file_name, args, parser, unfiltered_post_lex_parser)
         
-def parse_file(file_name, args, parser, unfiltered_post_lex_parser):
+def process_file(file_name, args, parser, unfiltered_post_lex_parser):
     text = open(file_name).read()
     if args.list_files:
         print(f'--- Processing "{file_name}"')
@@ -143,5 +134,15 @@ def parse_file(file_name, args, parser, unfiltered_post_lex_parser):
         print(a_tree.get_ast_str(),end="")
         print()
             
+def main():
+    arg_parser = create_arg_parser()
+    args = arg_parser.parse_args()
+
+    parser = create_lark_parser(args)
+    unfiltered_post_lex_parser = create_lark_parser(
+        args, filter_post_lex=False)
+    process_files_and_dirs(
+        args.filenames, args, parser, unfiltered_post_lex_parser)
+
 if __name__ == "__main__":
     main()
