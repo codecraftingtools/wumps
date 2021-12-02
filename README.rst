@@ -1,5 +1,5 @@
-.. Copyright 2018, 2019, 2020 Jeffrey A. Webb
-   Copyright 2021 NTA, Inc.
+.. Copyright (C) 2018, 2019, 2020 Jeffrey A. Webb
+   Copyright (C) 2021 NTA, Inc.
 
 ..  sphinx-include-summary-start
 

@@ -1,4 +1,4 @@
-# Copyright 2018, 2020 Jeffrey A. Webb
+# Copyright (C) 2018, 2020 Jeffrey A. Webb
 
 """
 Abstract syntax tree nodes.

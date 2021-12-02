@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2021 NTA, Inc.
+# Copyright (C) 2021 NTA, Inc.
 
 import os
 

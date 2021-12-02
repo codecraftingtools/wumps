@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2021 Jeffrey A. Webb
+# Copyright (C) 2021 Jeffrey A. Webb
 
 import os
 import sys

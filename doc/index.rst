@@ -1,4 +1,4 @@
-.. Copyright 2018, 2020, 2021 Jeffrey A. Webb
+.. Copyright (C) 2018, 2020, 2021 Jeffrey A. Webb
 
 .. Wumps documentation master file, created by
    sphinx-quickstart on Fri Nov  9 20:23:42 2018.

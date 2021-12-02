@@ -1,4 +1,4 @@
-# Copyright 2018, 2019 Jeffrey A. Webb
+# Copyright (C) 2018, 2019 Jeffrey A. Webb
 
 """
 Extra context required for parsing significant whitespace.

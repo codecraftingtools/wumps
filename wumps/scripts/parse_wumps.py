@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-# Copyright 2019, 2020, 2021 Jeffrey A. Webb
-# Copyright 2021 NTA, Inc.
+# Copyright (C) 2019, 2020, 2021 Jeffrey A. Webb
+# Copyright (C) 2021 NTA, Inc.
 
 import sys
 from pathlib import Path

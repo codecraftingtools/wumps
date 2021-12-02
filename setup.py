@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2021 NTA, Inc.
+# Copyright (C) 2021 NTA, Inc.
 
 from setuptools import setup, find_packages
 
