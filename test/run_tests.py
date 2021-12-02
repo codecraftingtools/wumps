@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 test_root = Path(sys.path[0])
 wumps_root = (test_root / "..").resolve()
-wumps_script = "./wumps.py"
+wumps_script = "./wumps/scripts/parse_wumps.py"
 test_root = test_root.relative_to(wumps_root)
 results = "./new_results.txt"
 

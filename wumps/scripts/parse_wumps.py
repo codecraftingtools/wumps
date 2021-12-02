@@ -3,17 +3,21 @@
 # Copyright 2019, 2020, 2021 Jeffrey A. Webb
 # Copyright 2021 NTA, Inc.
 
-# Add the project root directory to sys.path
 import sys
 from pathlib import Path
-wumps_root = Path(sys.path[0])
-sys.path.insert(1, str(wumps_root))
+
+# Add the wumps package root directory to sys.path, if running as a script
+if __name__ == "__main__":
+    wumps_package_root = Path(sys.path[0]).parent
+    sys.path.insert(1, str(wumps_package_root.parent))
 
 import argparse
 from lark import Lark
 from wumps.lark import post_lex, ast
+import wumps
 
-grammar_file = str(wumps_root / "wumps" / "lark" / "grammar.lark")
+wumps_package_root = Path(wumps.__file__).parent
+grammar_file = str(wumps_package_root / "lark" / "grammar.lark")
 
 def create_arg_parser():
     arg_parser = argparse.ArgumentParser(
