@@ -11,6 +11,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "click",
+        "lark",
     ],
     entry_points={
         "console_scripts": [
