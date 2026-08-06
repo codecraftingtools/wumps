@@ -10,8 +10,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "click",
-        "lark",
+        "lark==1.3.1",
     ],
     entry_points={
         "console_scripts": [
