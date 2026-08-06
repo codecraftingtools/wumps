@@ -59,9 +59,13 @@ class Parser:
         if self._args.list_files:
             print(f'--- Processing "{file_name}"')
         if self._args.lex:
-            generator = self._parser._build_lexer().lex(text)
-            print(f'--- Lexer Output for "{file_name}"')
-            post_lex.print_lex(generator)
+            if self._args.lexer == "contextual":
+                print(f'--- Lexer Output not available for contextual lexer')
+            else:
+                stream = self._parser.parser._make_lexer_thread(text)
+                tokens = list(stream.lex(None))
+                print(f'--- Lexer Output for "{file_name}"')
+                post_lex.print_lex(tokens)
             print()
         if self._args.unfiltered_post_lex:
             generator = self._unfiltered_post_lex_parser.lex(text)
