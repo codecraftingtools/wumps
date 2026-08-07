@@ -6,80 +6,104 @@ Abstract syntax tree nodes (lark extension).
 """
 
 import wumps.ast
+import wumps.source_info
 import lark
 import textwrap
 
-def build_ast(parse_tree_node, file_name=None):
+def build_ast(parse_tree_node, input_str=None, file_name=None):
     if isinstance(parse_tree_node, lark.Tree):
         t = parse_tree_node
+        src_info = wumps.source_info.Source_Info(
+            line = t.meta.line,
+            column = t.meta.column,
+            end_line = t.meta.end_line,
+            end_column = t.meta.end_column,
+            start_pos = t.meta.start_pos,
+            end_pos = t.meta.end_pos,
+            input_str = input_str,
+            file_name = file_name,
+        )
         if t.data == "file":
-            elements = [build_ast(child) for child in t.children]
-            ast_node = wumps.ast.File(elements)
+            elements = [build_ast(child, input_str, file_name)
+                        for child in t.children]
+            ast_node = wumps.ast.File(elements, src_info)
             if file_name is not None:
                 ast_node.path = file_name
         elif (t.data == "sequence" or
               t.data == "braced_block"):
-            elements = [build_ast(child) for child in t.children]
-            ast_node = wumps.ast.Sequence(elements)
+            elements = [build_ast(child, input_str, file_name)
+                        for child in t.children]
+            ast_node = wumps.ast.Sequence(elements, src_info)
         elif t.data == "binary_operation":
-            callee = build_ast(t.children[1])
-            argument1 = build_ast(t.children[0])
-            argument2 = build_ast(t.children[2])
-            arguments = wumps.ast.Sequence([argument1, argument2])
-            ast_node = wumps.ast.Call(callee, arguments)
+            callee = build_ast(t.children[1], input_str, file_name)
+            argument1 = build_ast(t.children[0], input_str, file_name)
+            argument2 = build_ast(t.children[2], input_str, file_name)
+            arguments = wumps.ast.Sequence([argument1, argument2], src_info)
+            ast_node = wumps.ast.Call(callee, arguments, src_info)
         elif t.data == "call":
-            callee = build_ast(t.children[0])
+            callee = build_ast(t.children[0], input_str, file_name)
             if len(t.children) == 2:
-                arguments = build_ast(t.children[1])
+                arguments = build_ast(t.children[1], input_str, file_name)
                 if not isinstance(arguments, wumps.ast.Sequence):
-                    arguments = wumps.ast.Sequence([arguments])
+                    arguments = wumps.ast.Sequence([arguments], src_info)
             else:
-                arguments = [build_ast(child) for child in t.children[1:]]
-                arguments = wumps.ast.Sequence(arguments)
-            ast_node = wumps.ast.Call(callee, arguments)
+                arguments = [build_ast(child, input_str, file_name)
+                             for child in t.children[1:]]
+                arguments = wumps.ast.Sequence(arguments, src_info)
+            ast_node = wumps.ast.Call(callee, arguments, src_info)
         elif (t.data == "named_expression" or
               t.data == "named_argument"):
-            name = build_ast(t.children[0])
+            name = build_ast(t.children[0], input_str, file_name)
             if len(t.children) > 1:
-                expression = build_ast(t.children[1])
+                expression = build_ast(t.children[1], input_str, file_name)
             else:
-                expression = wumps.ast.Nothing()
-            ast_node = wumps.ast.Named_Expression(name, expression)
+                expression = wumps.ast.Nothing(src_info)
+            ast_node = wumps.ast.Named_Expression(name, expression, src_info)
         elif t.data == "empty_parentheses":
-            ast_node = wumps.ast.Sequence()
+            ast_node = wumps.ast.Sequence([], src_info)
         else:
             raise Exception(f"unknown parse tree data field: {t.data}")
     elif isinstance(parse_tree_node, lark.Token):
         t = parse_tree_node
+        src_info = wumps.source_info.Source_Info(
+            line = t.line,
+            column = t.column,
+            end_line = t.end_line,
+            end_column = t.end_column,
+            start_pos = t.start_pos,
+            end_pos = t.end_pos,
+            input_str = input_str,
+            file_name = file_name,
+        )
         if (t.type == "SIMPLE_IDENTIFIER" or
             t.type == "COMPLEX_IDENTIFIER"):
-            ast_node = wumps.ast.Identifier(fix_up_identifier(t))
+            ast_node = wumps.ast.Identifier(fix_up_identifier(t), src_info)
         elif (t.type == "HEXADECIMAL_INTEGER" or
               t.type == "OCTAL_INTEGER" or
               t.type == "BINARY_INTEGER" or
               t.type == "DECIMAL_INTEGER"):
-            ast_node = wumps.ast.Integer(fix_up_integer(t))
+            ast_node = wumps.ast.Integer(fix_up_integer(t), src_info)
         elif t.type == "FLOAT":
-            ast_node = wumps.ast.Float(fix_up_float(t))
+            ast_node = wumps.ast.Float(fix_up_float(t), src_info)
         elif (t.type == "SIMPLE_STRING" or
               t.type == "BLOCK_STRING"):
-            ast_node = wumps.ast.String(fix_up_string(t))
+            ast_node = wumps.ast.String(fix_up_string(t), src_info)
         elif t.type == "MEMBER_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         elif t.type == "RANGE_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         elif t.type == "EXPONENTIATION_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         elif t.type == "ADDITION_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         elif t.type == "SUBRACTION_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         elif t.type == "MULTIPLICATION_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         elif t.type == "DIVISION_OPERATOR":
-            ast_node = wumps.ast.Operator(t)
+            ast_node = wumps.ast.Operator(t, src_info)
         else:
-            raise Exception(f"unknown token type: {t.type}")
+            raise Exception(f"unknown parse tree token type: {t.type}")
     return ast_node
 
 def fix_up_identifier(node):

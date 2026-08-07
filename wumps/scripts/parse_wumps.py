@@ -58,6 +58,10 @@ def create_arg_parser():
         action = "store_true",
         help = "print the abstract syntax tree")
     arg_parser.add_argument(
+        "--src-info",
+        action = "store_true",
+        help = "print source information for each AST node")
+    arg_parser.add_argument(
         "--debug-parser",
         action = "store_true",
         help = "debug lark parser")

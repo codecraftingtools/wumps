@@ -85,6 +85,6 @@ class Parser:
             print()
         if self._args.ast:
             print(f'--- Abstract Syntax Tree for "{file_name}"')
-            a_tree = ast.build_ast(tree, file_name=file_name)
-            print(a_tree.get_ast_str(),end="")
+            a_tree = ast.build_ast(tree, input_str=text, file_name=file_name)
+            print(a_tree.get_ast_str(show_src_info=self._args.src_info),end="")
             print()
