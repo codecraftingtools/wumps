@@ -1,7 +1,7 @@
 # Copyright (C) 2018, 2019 Jeffrey A. Webb
 
 """
-Extra context required for parsing significant whitespace.
+Extra context required for parsing significant whitespace in Wumps.
 """
 
 from collections import namedtuple

@@ -12,13 +12,13 @@ if __name__ == "__main__":
     sys.path.insert(1, str(wumps_package_root.parent))
 
 import wumps.cli
-import wumps.parser
+from wumps.lark.parser import Parser
             
 def main():
     arg_parser = wumps.cli.create_arg_parser()
     args = arg_parser.parse_args()
 
-    parser = wumps.parser.Parser(args)
+    parser = Parser(args)
     parser.process_files_and_dirs(args.filenames)
 
 if __name__ == "__main__":

@@ -1,6 +1,10 @@
 # Copyright (C) 2019, 2020, 2021 Jeffrey A. Webb
 # Copyright (C) 2021 NTA, Inc.
 
+"""
+Command-line interface for Wumps parser.
+"""
+
 import argparse
 
 def create_arg_parser():
@@ -53,5 +57,5 @@ def create_arg_parser():
     arg_parser.add_argument(
         "--debug-parser",
         action = "store_true",
-        help = "debug lark parser")
+        help = "debug parser implementation")
     return arg_parser

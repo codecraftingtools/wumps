@@ -1,7 +1,7 @@
 // Copyright (C) 2018, 2019, 2020, 2021 Jeffrey A. Webb
 // Copyright (C) 2021 NTA, Inc.
 
-// Grammar definition
+// Wumps grammar definition
 
 // Rules
 file: \

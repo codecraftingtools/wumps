@@ -2,7 +2,7 @@
 # Copyright (C) 2021 NTA, Inc.
 
 """
-Lark Post-Lex Processor for Wumps.
+Wumps post-lex processor.
 """
 
 from lark.lexer import Token

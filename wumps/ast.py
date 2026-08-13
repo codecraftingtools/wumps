@@ -1,7 +1,7 @@
 # Copyright (C) 2018, 2020 Jeffrey A. Webb
 
 """
-Abstract syntax tree nodes.
+Wumps abstract syntax tree nodes.
 """
 
 _indent_token = "  "

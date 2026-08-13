@@ -1,7 +1,7 @@
 # Copyright (C) 2026 Jeffrey A. Webb
 
 """
-Source information for abstract syntax tree nodes.
+Source information for Wumps abstract syntax tree nodes.
 """
 
 import dataclasses

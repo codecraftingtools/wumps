@@ -2,7 +2,7 @@
 # Copyright (C) 2021 NTA, Inc.
 
 """
-Abstract syntax tree nodes (lark extension).
+Wumps abstract syntax tree builder.
 """
 
 import wumps.ast
