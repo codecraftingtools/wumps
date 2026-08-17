@@ -14,7 +14,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "wumps = wumps.scripts.parse_wumps:main",
+            "wumps = wumps.scripts.process_wumps:main",
         ],
     },
 )

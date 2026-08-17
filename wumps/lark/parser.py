@@ -2,18 +2,17 @@
 # Copyright (C) 2021 NTA, Inc.
 
 """
-Wumps parser implementation.
+Wumps parsing implementation.
 """
 
 from pathlib import Path
 from lark import Lark
-from wumps.lark import post_lex, ast_builder
-import wumps.parser
+from wumps.lark import post_lex
 import wumps
 
-class Parser(wumps.parser.Parser):
+class Parser:
     def __init__(self, args):
-        super().__init__(args)
+        self._args = args
         wumps_package_root = Path(wumps.__file__).parent
         grammar_file = str(wumps_package_root / "lark" / "grammar.lark")
         multi_line_grammar = open(grammar_file).read()
@@ -36,38 +35,39 @@ class Parser(wumps.parser.Parser):
                       )
         return parser
 
-    def process_file(self, file_name):
-        text = open(file_name).read()
-        if self._args.list_files:
-            print(f'--- Processing "{file_name}"')
-        if self._args.lex:
-            if self._args.lexer == "contextual":
-                print(f'--- Lexer Output not available for contextual lexer')
+    def parse(self, text, file_name=None):
+        if file_name is None:
+            file_name_str = "input text"
+        else:
+            file_name_str = f'"{file_name}"'
+        args = self._args
+
+        if args.print_lex:
+            if args.lexer == "contextual":
+                print(f'--- Lexer output not available for contextual lexer')
             else:
                 stream = self._parser.parser._make_lexer_thread(text)
                 tokens = list(stream.lex(None))
-                print(f'--- Lexer Output for "{file_name}"')
+                print(f'--- Lexer Output for {file_name_str}')
                 post_lex.print_lex(tokens)
             print()
-        if self._args.unfiltered_post_lex:
+        if args.print_unfiltered_post_lex:
             generator = self._unfiltered_post_lex_parser.lex(text)
-            print(f'--- Unfiltered Post-Lexer Output for "{file_name}"')
+            print(f'--- Unfiltered Post-Lexer Output for {file_name_str}')
             post_lex.print_lex(generator)
             print()
-        if self._args.post_lex:
+        if args.print_post_lex:
             generator = self._parser.lex(text)
-            print(f'--- Post-Lexer Output for "{file_name}"')
+            print(f'--- Post-Lexer Output for {file_name_str}')
             post_lex.print_lex(generator)
             print()
-        if self._args.parse or self._args.ast:
-            tree = self._parser.parse(text)
-        if self._args.parse:
-            print(f'--- Parse Tree for "{file_name}"')
-            print(tree.pretty(),end="")
+
+        if args.stop_after_phase <= wumps.Phase.PARTIAL_PARSE:
+            return None
+
+        parse_tree = self._parser.parse(text)
+        if args.print_parse_tree:
+            print(f'--- Parse Tree for {file_name_str}')
+            print(parse_tree.pretty(), end="")
             print()
-        if self._args.ast:
-            print(f'--- Abstract Syntax Tree for "{file_name}"')
-            a_tree = ast_builder.build_ast(
-                tree, input_str=text, file_name=file_name)
-            print(a_tree.get_ast_str(show_src_info=self._args.src_info),end="")
-            print()
+        return parse_tree

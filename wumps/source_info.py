@@ -14,5 +14,5 @@ class Source_Info:
     end_column: int = None
     start_pos: int = None
     end_pos: int = None
-    input_str: str = None
+    file_text: str = None
     file_name: str = None

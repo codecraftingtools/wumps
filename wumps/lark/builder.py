@@ -10,7 +10,14 @@ import wumps.source_info
 import lark
 import textwrap
 
-def build_ast(parse_tree_node, input_str=None, file_name=None):
+class Builder:
+    def __init__(self, args):
+        self._args = args
+
+    def build_ast(self, *args, **kw):
+        return build_ast(*args, **kw)
+
+def build_ast(parse_tree_node, file_text=None, file_name=None):
     if isinstance(parse_tree_node, lark.Tree):
         t = parse_tree_node
         src_info = wumps.source_info.Source_Info(
@@ -20,42 +27,42 @@ def build_ast(parse_tree_node, input_str=None, file_name=None):
             end_column = t.meta.end_column,
             start_pos = t.meta.start_pos,
             end_pos = t.meta.end_pos,
-            input_str = input_str,
+            file_text = file_text,
             file_name = file_name,
         )
         if t.data == "file":
-            elements = [build_ast(child, input_str, file_name)
+            elements = [build_ast(child, file_text, file_name)
                         for child in t.children]
             ast_node = wumps.ast.File(elements, src_info)
             if file_name is not None:
                 ast_node.path = file_name
         elif (t.data == "sequence" or
               t.data == "braced_block"):
-            elements = [build_ast(child, input_str, file_name)
+            elements = [build_ast(child, file_text, file_name)
                         for child in t.children]
             ast_node = wumps.ast.Sequence(elements, src_info)
         elif t.data == "binary_operation":
-            callee = build_ast(t.children[1], input_str, file_name)
-            argument1 = build_ast(t.children[0], input_str, file_name)
-            argument2 = build_ast(t.children[2], input_str, file_name)
+            callee = build_ast(t.children[1], file_text, file_name)
+            argument1 = build_ast(t.children[0], file_text, file_name)
+            argument2 = build_ast(t.children[2], file_text, file_name)
             arguments = wumps.ast.Sequence([argument1, argument2], src_info)
             ast_node = wumps.ast.Call(callee, arguments, src_info)
         elif t.data == "call":
-            callee = build_ast(t.children[0], input_str, file_name)
+            callee = build_ast(t.children[0], file_text, file_name)
             if len(t.children) == 2:
-                arguments = build_ast(t.children[1], input_str, file_name)
+                arguments = build_ast(t.children[1], file_text, file_name)
                 if not isinstance(arguments, wumps.ast.Sequence):
                     arguments = wumps.ast.Sequence([arguments], src_info)
             else:
-                arguments = [build_ast(child, input_str, file_name)
+                arguments = [build_ast(child, file_text, file_name)
                              for child in t.children[1:]]
                 arguments = wumps.ast.Sequence(arguments, src_info)
             ast_node = wumps.ast.Call(callee, arguments, src_info)
         elif (t.data == "named_expression" or
               t.data == "named_argument"):
-            name = build_ast(t.children[0], input_str, file_name)
+            name = build_ast(t.children[0], file_text, file_name)
             if len(t.children) > 1:
-                expression = build_ast(t.children[1], input_str, file_name)
+                expression = build_ast(t.children[1], file_text, file_name)
             else:
                 expression = wumps.ast.Nothing(src_info)
             ast_node = wumps.ast.Named_Expression(name, expression, src_info)
@@ -72,7 +79,7 @@ def build_ast(parse_tree_node, input_str=None, file_name=None):
             end_column = t.end_column,
             start_pos = t.start_pos,
             end_pos = t.end_pos,
-            input_str = input_str,
+            file_text = file_text,
             file_name = file_name,
         )
         if (t.type == "SIMPLE_IDENTIFIER" or
