@@ -1,6 +1,7 @@
 --- Abstract Syntax Tree for "test/test_intro.wumps"
 File
   path: "test/test_intro.wumps"
+  path_wrt_root: "test_intro.wumps"
   elements:
     Identifier
       text: "expr_1A"
@@ -563,6 +564,7 @@ File
 --- Abstract Syntax Tree for "test/test_numbers.wumps"
 File
   path: "test/test_numbers.wumps"
+  path_wrt_root: "test_numbers.wumps"
   elements:
     Named_Expression
       name: Identifier
@@ -607,6 +609,7 @@ File
 --- Abstract Syntax Tree for "test/test_strings.wumps"
 File
   path: "test/test_strings.wumps"
+  path_wrt_root: "test_strings.wumps"
   elements:
     Sequence
       elements:
@@ -629,6 +632,7 @@ File
 --- Abstract Syntax Tree for "test/test_structure.wumps"
 File
   path: "test/test_structure.wumps"
+  path_wrt_root: "test_structure.wumps"
   elements:
     Call
       callee: Identifier

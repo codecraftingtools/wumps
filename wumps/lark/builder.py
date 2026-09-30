@@ -17,7 +17,8 @@ class Builder:
     def build_ast(self, *args, **kw):
         return build_ast(*args, **kw)
 
-def build_ast(parse_tree_node, file_text=None, file_name=None):
+def build_ast(parse_tree_node, file_text=None, file_name=None,
+              path_root=None):
     if isinstance(parse_tree_node, lark.Tree):
         t = parse_tree_node
         src_info = wumps.source_info.Source_Info(
@@ -33,9 +34,8 @@ def build_ast(parse_tree_node, file_text=None, file_name=None):
         if t.data == "file":
             elements = [build_ast(child, file_text, file_name)
                         for child in t.children]
-            ast_node = wumps.ast.File(elements, src_info)
-            if file_name is not None:
-                ast_node.path = file_name
+            ast_node = wumps.ast.File(
+                elements, file_name, path_root, src_info)
         elif (t.data == "sequence" or
               t.data == "braced_block"):
             elements = [build_ast(child, file_text, file_name)

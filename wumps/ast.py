@@ -4,6 +4,8 @@
 Wumps abstract syntax tree nodes.
 """
 
+import pathlib
+
 _indent_token = "  "
 
 class Node:
@@ -116,14 +118,29 @@ class Elements(Node):
         return s
 
 class File(Elements):
-    def __init__(self, elements, src_info=None):
+    def __init__(self, elements, file_name=None, path_root=None,
+                 src_info=None):
         super().__init__(elements, src_info=src_info)
-        self.path = self.src_info.file_name
+        if file_name is None:
+            self.path = self.src_info.file_name
+        else:
+            self.path = file_name
+        if self.path is None:
+            self.path_wrt_root = None
+        elif path_root is None:
+            self.path_wrt_root = pathlib.Path(self.path).name
+        else:
+            self.path_wrt_root = pathlib.Path(self.path).relative_to(
+                path_root)
 
     def _get_attribute_ast_strs(self, depth, show_src_info):
         path_str = "Nothing" if self.path is None else '"{}"'.format(
             self.path)
         s = '{}path: {}\n'.format(_indent_token*(depth+1), path_str)
+        path_wrt_root_str = "Nothing" if self.path_wrt_root is None else \
+            '"{}"'.format(self.path_wrt_root)
+        s += '{}path_wrt_root: {}\n'.format(_indent_token*(depth+1),
+                                            path_wrt_root_str)
         s += super()._get_attribute_ast_strs(depth, show_src_info)
         return s
 

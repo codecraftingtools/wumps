@@ -62,7 +62,7 @@ class Parser:
             post_lex.print_lex(generator)
             print()
 
-        if args.stop_after_phase <= wumps.Phase.PARTIAL_PARSE:
+        if args.stop_after_phase < wumps.Phase.PARSE:
             return None
 
         parse_tree = self._parser.parse(text)
