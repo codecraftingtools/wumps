@@ -9,5 +9,5 @@ from enum import IntEnum
 class Phase(IntEnum):
     PARTIAL_PARSE = 0
     PARSE = 1
-    BUILD = 2
+    AST = 2
     ALL = 3

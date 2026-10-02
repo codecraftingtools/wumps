@@ -21,7 +21,7 @@ class Processor:
         asts = self.build_asts_from_root_dirs_and_files(
             names_of_dirs_and_files, filter_extensions)
 
-        if args.stop_after_phase < wumps.Phase.BUILD:
+        if args.stop_after_phase < wumps.Phase.AST:
             return
 
         if args.print_path:
@@ -86,7 +86,7 @@ class Processor:
         text = open(file_name).read()
         parse_tree = self.parse(text, file_name)
 
-        if args.stop_after_phase < wumps.Phase.BUILD:
+        if args.stop_after_phase < wumps.Phase.AST:
             return None
 
         ast = self.build_ast_from_parse_tree(

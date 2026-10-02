@@ -46,10 +46,10 @@ def add_phase_options(arg_parser):
         const = wumps.Phase.PARSE,
         help = "Exit after parsing the specified input files")
     arg_parser.add_argument(
-        "--build",
+        "--ast",
         action = "store_const",
         dest = "stop_after_phase",
-        const = wumps.Phase.BUILD,
+        const = wumps.Phase.AST,
         help = "Exit after building the abstract syntax tree (AST)")
 
 def add_output_options(arg_parser):
