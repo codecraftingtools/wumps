@@ -23,6 +23,12 @@ def add_general_options(arg_parser):
         default = None,
         help = "specify a custom domain-specific language (DSL) processing "
         "module (default: %(default)s)")
+    arg_parser.add_argument(
+        "-e",
+        action = "append",
+        dest = "filter_extensions",
+        metavar = "EXT [-e EXT]...",
+        help = "only process files with the specified file extension(s)")
 
 def add_phase_options(arg_parser):
     arg_parser.add_argument(

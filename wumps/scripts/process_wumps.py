@@ -25,7 +25,8 @@ def main():
     args = arg_parser.parse_args()
 
     processor = Processor(Parser(args), Builder(args), args)
-    processor.process_root_dirs_and_files(args.names_of_dirs_and_files)
+    processor.process_root_dirs_and_files(
+        args.names_of_dirs_and_files, args.filter_extensions)
 
 if __name__ == "__main__":
     main()
